@@ -193,7 +193,9 @@ bot.dialog('PlayMusic', [
                     session.dialogData.songtitle = songtitle.entity;
 
                     var artists = tracks.map(track => track.artists[0].name).filter((v, i, s) => s.indexOf(v) === i);
-                    builder.Prompts.choice(session, 'perhaps you might want to listen from artists below.', artists.join('|'));
+
+                    var listStyle = builder.ListStyle['button'];
+                    builder.Prompts.choice(session, 'perhaps you might want to listen from artists below.', artists, { listStyle });
                 } else {
                     session.endDialog();
                 }
