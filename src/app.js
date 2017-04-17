@@ -193,9 +193,10 @@ bot.dialog('PlayMusic', [
 
                     tracks.forEach((track) => {
                         var artist = track.artists[0];
+                        var query = artist.name + ' - ' + track.name;
 
-                        if (!artists[artist.name]) {
-                            artists.push(artist.name + ' - ' + track.name);
+                        if (!artists[query]) {
+                            artists.push(query);
                         }
                     });
 
