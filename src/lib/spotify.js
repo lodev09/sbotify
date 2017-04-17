@@ -136,17 +136,17 @@ class Spotify {
         });
     }
 
-    async getTrack(query) {
+    async getTracks(query) {
         try {
             console.log('searching for "' + query + '"');
             const data = await this.get('/search', {
                 q: query,
                 type: 'track',
-                limit: 1
+                limit: 20
             });
 
             if (data && data.tracks.items.length > 0) {
-                return data.tracks.items[0];
+                return data.tracks.items;
             } else return null;
 
         } catch (err) {

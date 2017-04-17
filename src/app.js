@@ -34,9 +34,8 @@ const getSpotify = function(session, options) {
         return new Spotify(session.conversationData.spotifyToken);
     } else {
         message = 'okay before I do that, do you have a spotify account?'
+        session.beginDialog('AuthorizeSpotify', { message, options });
     }
-
-    session.beginDialog('AuthorizeSpotify', { message, options });
 }
 
 app.post('/api/messages', connector.listen());
@@ -62,16 +61,43 @@ bot.set('persistConversationData', true);
 const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
-const playTrack = async function(session, spotify, query) {
+const playTrack = async function(session, spotify, query, message = true) {
     session.send('looking for your music...');
     session.sendTyping();
-    var track = await spotify.getTrack(query);
+    var tracks = await spotify.getTracks(query);
 
-    if (track) {
+    if (tracks) {
+        var track = tracks[0];
+
         await spotify.play(track.uri);
-        session.endDialog('playing **%s** by **%s**, enjoy!', track.name, track.artists.length > 0 ? track.artists[0].name : 'not sure who');
+
+        if (message) {
+            var artist = track.artists.length > 0 ? track.artists[0].name : 'not sure who';
+            var title = track.name;
+            var album = track.album.name;
+            var images = track.album.images;
+            var url = track.external_urls.spotify;
+
+            // session.send('playing **%s** by **%s**.', track.name, track.artists.length > 0 ? track.artists[0].name : 'not sure who');
+            var msg = new builder.Message(session)
+                .textFormat(builder.TextFormat.markdown)
+                .attachments([
+                    new builder.HeroCard(session)
+                        .title('Now playing: ' + title)
+                        .subtitle('By ' + artist)
+                        .text('From the album %s', album)
+                        .images(images.map((image) => {
+                            return builder.CardImage.create(session, image.url);
+                        }))
+                        .tap(builder.CardAction.openUrl(session, url))
+                ]);
+            session.send(msg);
+        }
+
+        return tracks;
     } else {
         session.endDialog('no music found, sorry.');
+        return;
     }
 }
 
@@ -84,7 +110,7 @@ bot.on('conversationUpdate', function (message) {
                 if (identity.id === message.address.bot.id) {
                     var reply = new builder.Message()
                         .address(message.address)
-                        .text("Hello everyone!");
+                        .text("hello everyone!");
                     bot.send(reply);
                 }
             });
@@ -96,7 +122,7 @@ bot.on('conversationUpdate', function (message) {
                 if (identity.id === message.address.bot.id) {
                     var reply = new builder.Message()
                         .address(message.address)
-                        .text("Goodbye");
+                        .text("k bye");
                     bot.send(reply);
                 }
             });
@@ -122,7 +148,7 @@ bot.on('deleteUserData', function (message) {
 
 bot.dialog('greeting', function(session, args) {
     var name = session.message.user ? session.message.user.name : null;
-    session.endDialog('yes?');
+    session.endDialog('yes %s?', name || 'user');
 }).triggerAction({
     matches: /^hi|hello|hey/i
 });
@@ -130,45 +156,67 @@ bot.dialog('greeting', function(session, args) {
 bot.dialog('playback', async function(session, args) {
     var spotify = getSpotify(session);
 
-    if (!spotify) {
-        return;
-    }
-
-    var match = args.intent.matched[0];
-    switch (match) {
-        case 'pause':
-        case 'stop':
-            await spotify.pause();
-            break;
-        case 'play':
-        case 'resume':
-            await spotify.play();
-            break;
-    }
-
-    session.endDialog('(y)');
-
-}).triggerAction({
-    matches: /^play|pause|resume|stop/i
-});
-
-bot.dialog('PlayMusic', async function(session, args) {
-    if (!args) return session.endDialog();
-
-    var songquery =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songquery');
-    if (songquery) {
-        var spotify = getSpotify(session, { track: songquery.entity });
-
-        if (!spotify) {
-            return;
+    if (spotify) {
+        var match = args.intent.matched[0];
+        switch (match) {
+            case 'pause':
+            case 'stop':
+                await spotify.pause();
+                break;
+            case 'play':
+            case 'resume':
+                await spotify.play();
+                break;
         }
 
-        playTrack(session, spotify, songquery.entity);
-    } else {
-        session.endDialog("I didn't understand that...");
+        session.endDialog('(y)');
     }
 
 }).triggerAction({
+    matches: /^play|pause|resume|stop$/i
+});
+
+bot.dialog('PlayMusic', [
+    async function(session, args) {
+        if (!args) return session.endDialog();
+
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+
+        if (songtitle) {
+            var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+            var spotify = getSpotify(session, { track });
+
+            if (spotify) {
+                const tracks = await playTrack(session, spotify, track);
+                if (tracks && tracks.length > 1 && !songartist) {
+                    session.dialogData.songtitle = songtitle.entity;
+
+                    var artists = tracks.map(track => track.artists[0].name).filter((v, i, s) => s.indexOf(v) === i);
+                    builder.Prompts.choice(session, 'perhaps you might want to listen from artists below.', artists.join('|'));
+                } else {
+                    session.endDialog();
+                }
+            }
+        } else {
+            session.endDialog("I didn't understand that...");
+        }
+
+    },
+    async function (session, results) {
+        if (results.response) {
+            if (results.response.entity) {
+                var spotify = getSpotify(session);
+                if (spotify) {
+                    await playTrack(session, spotify, session.dialogData.songtitle + ' artist:' + results.response.entity, false);
+                    session.endDialog('playing **%s\'s** version :)', results.response.entity);
+                }
+            } else {
+                session.endDialog('k');
+            }
+        }
+    }
+]).triggerAction({
     matches: 'PlayMusic'
 });
 
@@ -197,11 +245,12 @@ bot.dialog('AuthorizeSpotify', [
     function(session, results) {
         if (results.response) {
             var address = JSON.stringify(session.message.address);
-
-            session.endDialog('good, [click here](%s) to authorize me', 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(address));
+            session.send('good, [click here](%s) to authorize me', 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(address));
+            session.endDialogWithResult();
 
         } else {
-            session.endDialog('okay no problem!');
+            session.send('k nvm');
+            session.endDialogWithResult();
         }
     }
 ]);
