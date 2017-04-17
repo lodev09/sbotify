@@ -135,25 +135,25 @@ bot.on('contactRelationUpdate', function (message) {
         var name = message.user ? message.user.name : null;
         var reply = new builder.Message()
                 .address(message.address)
-                .text("Hello %s...", name || 'there');
+                .text("hello %s...", name || 'there');
         bot.send(reply);
     } else {
-        // delete their data
+        bot.beginDialog(message.address, 'DeleteUserData', { message: 'k bye' });
     }
 });
 
 bot.on('deleteUserData', function (message) {
-    // User asked to delete their data
+    bot.beginDialog(message.address, 'DeleteUserData', { message: 'got it' });
 });
 
-bot.dialog('greeting', function(session, args) {
+bot.dialog('Greeting', function(session, args) {
     var name = session.message.user ? session.message.user.name : null;
     session.endDialog('yes %s?', name || 'user');
 }).triggerAction({
     matches: /^hi|hello|hey/i
 });
 
-bot.dialog('playback', async function(session, args) {
+bot.dialog('Playback', async function(session, args) {
     var spotify = getSpotify(session);
 
     if (spotify) {
@@ -254,3 +254,12 @@ bot.dialog('AuthorizeSpotify', [
         }
     }
 ]);
+
+bot.dialog('DeleteUserData', function(session, args) {
+    session.conversationData = {};
+    session.userData = {};
+
+    session.endDialog(args.message ? args.message : 'done ;)');
+}).triggerAction({
+    matches: /^reset/i
+});
