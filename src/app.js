@@ -196,12 +196,12 @@ bot.dialog('PlayMusic', async function(session, args) {
                     var artist = track.artists[0];
 
                     if (!artists[artist.name]) {
-                        var image = track.album.images[1];
+                        var image = track.album.images[2];
                         var album = track.album.name;
 
                         artists[artist.name] = songtitle.entity + ' artist:' + artist.name;
 
-                        var card = new builder.HeroCard(session)
+                        var card = new builder.ThumbnailCard(session)
                             .title(artist.name + ' - ' + track.name)
                             .subtitle(album)
                             .text('')
@@ -210,7 +210,7 @@ bot.dialog('PlayMusic', async function(session, args) {
                                     .tap(builder.CardAction.showImage(session, image.url)),
                             ])
                             .buttons([
-                                builder.CardAction.imBack(session, artist.name + ' - ' + songtitle.entity, "Play")
+                                builder.CardAction.imBack(session, artist.name + ' - ' + track.name, "Play")
                             ]);
 
                         cards.push(card);
@@ -222,8 +222,8 @@ bot.dialog('PlayMusic', async function(session, args) {
                     .attachmentLayout(builder.AttachmentLayout.carousel)
                     .attachments(cards);
 
-                session.endDialog(msg);
-                // builder.Prompts.choice(session, msg, artists);
+                // session.endDialog(msg);
+                builder.Prompts.choice(session, msg, artists);
             } else {
                 session.endDialog();
             }
