@@ -81,7 +81,6 @@ class Spotify {
     put(endPoint, data) {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log(data);
                 var token = await this.getAccessToken();
                 var options = {
                     url: 'https://api.spotify.com/v1' + endPoint,

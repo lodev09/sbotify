@@ -72,25 +72,24 @@ const playTrack = async function(session, spotify, query, message = true) {
         await spotify.play(track.uri);
 
         if (message) {
-            var artist = track.artists.length > 0 ? track.artists[0].name : 'not sure who';
+            var artist = track.artists && track.artists.length > 0 ? track.artists[0].name : 'not sure who';
             var title = track.name;
             var album = track.album.name;
-            var images = track.album.images;
+            var image = track.album.images[1];
             var url = track.external_urls.spotify;
 
-            // session.send('playing **%s** by **%s**.', track.name, track.artists.length > 0 ? track.artists[0].name : 'not sure who');
+            const card = new builder.HeroCard(session)
+                .title(artist + ' - ' + title)
+                .subtitle(album)
+                .images([
+                    builder.CardImage.create(session, image.url)
+                        .tap(builder.CardAction.showImage(session, image.url))
+                ])
+                .tap(builder.CardAction.openUrl(session, url));
+
             var msg = new builder.Message(session)
                 .textFormat(builder.TextFormat.markdown)
-                .attachments([
-                    new builder.HeroCard(session)
-                        .title('Now playing: ' + title)
-                        .subtitle('By ' + artist)
-                        .text('From the album %s', album)
-                        .images(images.map((image) => {
-                            return builder.CardImage.create(session, image.url);
-                        }))
-                        .tap(builder.CardAction.openUrl(session, url))
-                ]);
+                .attachments([ card ]);
             session.send(msg);
         }
 
@@ -176,49 +175,63 @@ bot.dialog('Playback', async function(session, args) {
     matches: /^play|pause|resume|stop$/i
 });
 
-bot.dialog('PlayMusic', [
-    async function(session, args) {
-        if (!args) return session.endDialog();
+bot.dialog('PlayMusic', async function(session, args) {
+    if (!args) return session.endDialog();
 
-        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+    var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+    var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
-        if (songtitle) {
-            var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
-            var spotify = getSpotify(session, { track });
+    if (songtitle) {
+        var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+        var spotify = getSpotify(session, { track });
 
-            if (spotify) {
-                const tracks = await playTrack(session, spotify, track);
-                if (tracks && tracks.length > 1 && !songartist) {
-                    session.dialogData.songtitle = songtitle.entity;
+        if (spotify) {
+            const tracks = await playTrack(session, spotify, track);
+            if (tracks && tracks.length > 1 && !songartist) {
+                session.send('found other versions too...');
+                var artists = {};
+                var cards = [];
 
-                    var artists = tracks.map(track => track.artists[0].name).filter((v, i, s) => s.indexOf(v) === i);
+                tracks.forEach((track) => {
+                    var artist = track.artists[0];
 
-                    var listStyle = builder.ListStyle['button'];
-                    builder.Prompts.choice(session, 'perhaps you might want to listen from artists below.', artists, { listStyle });
-                } else {
-                    session.endDialog();
-                }
-            }
-        } else {
-            session.endDialog("I didn't understand that...");
-        }
+                    if (!artists[artist.name]) {
+                        var image = track.album.images[1];
+                        var album = track.album.name;
 
-    },
-    async function (session, results) {
-        if (results.response) {
-            if (results.response.entity) {
-                var spotify = getSpotify(session);
-                if (spotify) {
-                    await playTrack(session, spotify, session.dialogData.songtitle + ' artist:' + results.response.entity, false);
-                    session.endDialog('playing **%s\'s** version :)', results.response.entity);
-                }
+                        artists[artist.name] = songtitle.entity + ' artist:' + artist.name;
+
+                        var card = new builder.ThumbnailCard(session)
+                            .title(artist.name + ' - ' + track.name)
+                            .subtitle(album)
+                            .text('Click button below to play')
+                            .images([
+                                builder.CardImage.create(session, image.url)
+                                    .tap(builder.CardAction.showImage(session, image.url)),
+                            ])
+                            .buttons([
+                                builder.CardAction.imBack(session, artist.name + ' - ' + songtitle.entity, "Play")
+                            ]);
+
+                        cards.push(card);
+                    }
+                });
+
+                var msg = new builder.Message(session)
+                    .textFormat(builder.TextFormat.xml)
+                    .attachmentLayout(builder.AttachmentLayout.carousel)
+                    .attachments(cards);
+
+                session.endDialog(msg);
+                // builder.Prompts.choice(session, msg, artists);
             } else {
-                session.endDialog('k');
+                session.endDialog();
             }
         }
+    } else {
+        session.endDialog("I didn't understand that...");
     }
-]).triggerAction({
+}).triggerAction({
     matches: 'PlayMusic'
 });
 
