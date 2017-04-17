@@ -4,8 +4,8 @@
   "description": "Lodev09 personal bot",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon --exec ./node_modules/.bin/babel-node src/index.js",
-    "prestart": "./node_modules/.bin/babel src --out-dir dist",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "prestart": "babel src --out-dir dist",
     "start": "node dist/index.js"
   },
   "keywords": [
@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.16.1",
+    "babel-cli": "^6.24.1",
     "botbuilder": "^3.7.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
@@ -24,7 +25,6 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
     "babel-polyfill": "^6.23.0",
