@@ -141,7 +141,7 @@ class Spotify {
             const data = await this.get('/search', {
                 q: query,
                 type: 'track',
-                limit: 20
+                limit: 10
             });
 
             if (data && data.tracks.items.length > 0) {

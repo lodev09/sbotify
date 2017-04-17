@@ -175,63 +175,52 @@ bot.dialog('Playback', async function(session, args) {
     matches: /^play|pause|resume|stop$/i
 });
 
-bot.dialog('PlayMusic', async function(session, args) {
-    if (!args) return session.endDialog();
+bot.dialog('PlayMusic', [
+    async function(session, args) {
+        if (!args) return session.endDialog();
 
-    var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-    var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
-    if (songtitle) {
-        var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
-        var spotify = getSpotify(session, { track });
+        if (songtitle) {
+            var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+            var spotify = getSpotify(session, { track });
 
-        if (spotify) {
-            const tracks = await playTrack(session, spotify, track);
-            if (tracks && tracks.length > 1 && !songartist) {
-                session.send('found other versions too...');
-                var artists = {};
-                var cards = [];
+            if (spotify) {
+                const tracks = await playTrack(session, spotify, track);
+                if (tracks && tracks.length > 1 && !songartist) {
+                    var artists = [];
 
-                tracks.forEach((track) => {
-                    var artist = track.artists[0];
+                    tracks.forEach((track) => {
+                        var artist = track.artists[0];
 
-                    if (!artists[artist.name]) {
-                        var image = track.album.images[2];
-                        var album = track.album.name;
+                        if (!artists[artist.name]) {
+                            artists.push(artist.name + ' - ' + track.name);
+                        }
+                    });
 
-                        artists[artist.name] = songtitle.entity + ' artist:' + artist.name;
-
-                        var card = new builder.ThumbnailCard(session)
-                            .title(artist.name + ' - ' + track.name)
-                            .subtitle(album)
-                            .text('')
-                            .images([
-                                builder.CardImage.create(session, image.url)
-                                    .tap(builder.CardAction.showImage(session, image.url)),
-                            ])
-                            .buttons([
-                                builder.CardAction.imBack(session, artist.name + ' - ' + track.name, "Play")
-                            ]);
-
-                        cards.push(card);
-                    }
-                });
-
-                var msg = new builder.Message(session)
-                    .textFormat(builder.TextFormat.xml)
-                    .attachmentLayout(builder.AttachmentLayout.carousel)
-                    .attachments(cards);
-
-                // session.endDialog(msg);
-                builder.Prompts.choice(session, msg, artists);
-            } else {
-                session.endDialog();
+                    session.endDialog();
+                    builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
+                } else {
+                    session.endDialog();
+                }
+            }
+        } else {
+            session.endDialog('not sure... sorry');
+        }
+    },
+    async function(session, results) {
+        if (results.response) {
+            if (results.response.entity) {
+                var spotify = getSpotify(session);
+                if (spotify) {
+                    await playTrack(session, spotify, results.response.entity);
+                    session.endDialog('(y)');
+                }
             }
         }
-    } else {
-        session.endDialog("I didn't understand that...");
     }
-}).triggerAction({
+]).triggerAction({
     matches: 'PlayMusic'
 });
 
