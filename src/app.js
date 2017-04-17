@@ -201,10 +201,10 @@ bot.dialog('PlayMusic', async function(session, args) {
 
                         artists[artist.name] = songtitle.entity + ' artist:' + artist.name;
 
-                        var card = new builder.ThumbnailCard(session)
+                        var card = new builder.HeroCard(session)
                             .title(artist.name + ' - ' + track.name)
                             .subtitle(album)
-                            .text('Click button below to play')
+                            .text('')
                             .images([
                                 builder.CardImage.create(session, image.url)
                                     .tap(builder.CardAction.showImage(session, image.url)),
