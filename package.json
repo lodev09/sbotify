@@ -4,8 +4,8 @@
   "description": "Lodev09 personal bot",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/index.js",
-    "prestart": "babel src --out-dir dist",
+    "dev": "nodemon --exec ./node_modules/.bin/babel-node src/index.js",
+    "prestart": "./node_modules/.bin/babel src --out-dir dist",
     "start": "node dist/index.js"
   },
   "keywords": [
