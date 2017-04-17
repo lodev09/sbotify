@@ -199,7 +199,6 @@ bot.dialog('PlayMusic', [
                         }
                     });
 
-                    session.endDialog();
                     builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
                 } else {
                     session.endDialog();
