@@ -13,7 +13,7 @@ let app = express();
 let server = http.Server(app);
 let io = new SocketIO(server);
 
-const port = process.env.port || process.env.BOT_PORT || 3978;
+const port = process.env.PORT;
 server.listen(port, function () {
    console.log('listening to %s', port);
 });
