@@ -64,7 +64,7 @@ bot.recognizer(recognizer);
 const playTrack = async function(session, spotify, query, message = true) {
     session.send('looking for your music...');
     session.sendTyping();
-    var tracks = await spotify.getTracks(query);
+    var tracks = await spotify.getTracks(query.replace(" ' ", "'"));
 
     if (tracks) {
         var track = tracks[0];
