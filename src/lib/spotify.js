@@ -6,13 +6,18 @@ import request from 'request';
 
 class Spotify {
 
+    constructor(tokenData, userData) {
+        this.tokenData = tokenData;
+        this.userData = userData;
+    }
+
     static initToken({ clientId, clientSecret, authCode, redirectUri}) {
         return new Promise((resolve, reject) => {
 
             const options = {
                 url: 'https://accounts.spotify.com/api/token',
                     headers: {
-                    'Authorization': 'Basic ' + (new Buffer(clientId + ':' + clientSecret).toString('base64'))
+                    'Authorization': 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64'))
                 },
                 form: {
                     'grant_type': 'authorization_code',
@@ -78,18 +83,44 @@ class Spotify {
         })
     }
 
-    put(endPoint, data) {
+    post(endPoint, body) {
         return new Promise(async (resolve, reject) => {
             try {
                 var token = await this.getAccessToken();
                 var options = {
                     url: 'https://api.spotify.com/v1' + endPoint,
-                    body: data,
+                    body,
                     headers: { 'Authorization': 'Bearer ' + token },
                     json: true
                 };
 
-                console.log('PUT: ' + endPoint);
+                console.log('POST: ' + endPoint, body);
+
+                request.post(options, function(error, response, body) {
+                    if (!error) {
+                        resolve(body);
+                    } else {
+                        reject(response.statusCode);
+                    }
+                });
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    put(endPoint, body) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var token = await this.getAccessToken();
+                var options = {
+                    url: 'https://api.spotify.com/v1' + endPoint,
+                    body,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    json: true
+                };
+
+                console.log('PUT: ' + endPoint, body);
 
                 request.put(options, function(error, response, body) {
                     if (!error && response.statusCode === 200) {
@@ -135,13 +166,21 @@ class Spotify {
         });
     }
 
-    async getTracks(query) {
+    async getUserData() {
+        try {
+            return await this.get('/me');
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async search(query, type = 'track', limit = 10) {
         try {
             console.log('searching for "' + query + '"');
             const data = await this.get('/search', {
                 q: query,
-                type: 'track',
-                limit: 10
+                type,
+                limit
             });
 
             if (data && data.tracks.items.length > 0) {
@@ -161,9 +200,9 @@ class Spotify {
         }
     }
 
-    async play(uri) {
+    async play(uri = null, deviceId = null) {
         try {
-            await this.put('/me/player/play', uri && {
+            await this.put('/me/player/play' + (deviceId ? '?device_id=' + deviceId : ''), uri && {
                 uris: [ uri ]
             });
         } catch (err) {
@@ -173,15 +212,53 @@ class Spotify {
 
     async getDevices() {
         try {
-            return await this.get('/me/player/devices');
+            var data = await this.get('/me/player/devices');
+            return data.devices;
         } catch (err) {
             console.log(err);
         }
     }
 
-	constructor(tokenData) {
-        this.tokenData = tokenData;
-	}
+    async setDevice(deviceId, play = true) {
+        try {
+            return await this.put('/me/player', {
+                device_ids: [ deviceId ],
+                play
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async getCurrentTrack() {
+        try {
+            var data = await this.get('/me/player/currently-playing');
+            return data && data.item;
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async getPlaylists() {
+        try {
+            var data = await this.get('/me/playlists');
+            return data && data.items;
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async createPlaylist(name) {
+        try {
+            return await this.post('/users/'+this.userData.id+'/playlists', {
+                description: 'playlist created by bot',
+                public: false,
+                name
+            });
+        } catch (err) {
+            console.log(err)
+        }
+    }
 }
 
 export default Spotify;
