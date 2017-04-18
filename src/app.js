@@ -261,7 +261,7 @@ bot.dialog('PlayMusic', [
                         var artist = track.artists[0];
                         var query = artist.name + ' - ' + track.name;
 
-                        if (!artists[query]) {
+                        if (artists.indexOf(query) === -1) {
                             artists.push(query);
                         }
                     });
