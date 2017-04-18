@@ -179,8 +179,8 @@ bot.dialog('PlayMusic', [
     async function(session, args) {
         if (!args) return session.endDialog();
 
-        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'music_songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'music_songartist');
 
         if (songtitle) {
             var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
@@ -200,7 +200,7 @@ bot.dialog('PlayMusic', [
                         }
                     });
 
-                    builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
+                    builder.Prompts.choice(session, 'found other versions too...', artists);
                 } else {
                     session.endDialog();
                 }

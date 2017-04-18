@@ -137,7 +137,7 @@ class Spotify {
 
     async getTracks(query) {
         try {
-            console.log('searching for "' + query + '"');
+            console.log('searching for "' + query.replace(" ' ", "'") + '"');
             const data = await this.get('/search', {
                 q: query,
                 type: 'track',
