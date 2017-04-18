@@ -64,7 +64,7 @@ bot.recognizer(recognizer);
 const playTrack = async function(session, spotify, query, message = true) {
     session.send('looking for your music...');
     session.sendTyping();
-    var tracks = await spotify.getTracks(query.replace(" ' ", "'"));
+    var tracks = await spotify.getTracks(query.replace(' \' ', '\''));
 
     if (tracks) {
         var track = tracks[0];
@@ -179,8 +179,8 @@ bot.dialog('PlayMusic', [
     async function(session, args) {
         if (!args) return session.endDialog();
 
-        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'music_songtitle');
-        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'music_songartist');
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
         if (songtitle) {
             var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
