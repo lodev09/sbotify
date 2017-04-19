@@ -1,0 +1,1827 @@
+{
+  "luis_schema_version": "2.0.0",
+  "versionId": "0.1",
+  "name": "bot-09",
+  "desc": "Lodev09 personal LUIS bot",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "CancelAction"
+    },
+    {
+      "name": "ConfirmAction"
+    },
+    {
+      "name": "Greeting"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "PlayerControl"
+    },
+    {
+      "name": "PlaylistControl"
+    },
+    {
+      "name": "PlayMusic"
+    },
+    {
+      "name": "SongQuery"
+    }
+  ],
+  "entities": [
+    {
+      "name": "greeting"
+    },
+    {
+      "name": "player_command",
+      "children": [
+        "volume",
+        "next",
+        "play",
+        "shuffle",
+        "pause",
+        "previous"
+      ]
+    },
+    {
+      "name": "player_other",
+      "children": [
+        "tracks",
+        "song",
+        "please"
+      ]
+    },
+    {
+      "name": "playlist_command",
+      "children": [
+        "show",
+        "add",
+        "create",
+        "remove",
+        "move"
+      ]
+    },
+    {
+      "name": "playlist_name"
+    },
+    {
+      "name": "position",
+      "children": [
+        "begin",
+        "end"
+      ]
+    },
+    {
+      "name": "songartist"
+    },
+    {
+      "name": "songcurrent"
+    },
+    {
+      "name": "songtitle"
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "bing_entities": [
+    "number",
+    "ordinal",
+    "percentage"
+  ],
+  "actions": [],
+  "model_features": [
+    {
+      "name": "Cancel Action",
+      "mode": true,
+      "words": "cancel,abort,stop it,nevermind,nvm,forget it",
+      "activated": true
+    },
+    {
+      "name": "Confirm Action",
+      "mode": true,
+      "words": "yes please,yes,okay,sure,proceed,do it,confirm,confirmed",
+      "activated": true
+    },
+    {
+      "name": "Greeting",
+      "mode": true,
+      "words": "hi,hello,what ' s up,hey,hi bot,hello bot",
+      "activated": true
+    },
+    {
+      "name": "Playback Commands",
+      "mode": true,
+      "words": "play,pause,resume,next,previous,volume,shuffle,repeat",
+      "activated": true
+    },
+    {
+      "name": "Playlist Commands",
+      "mode": true,
+      "words": "create playlist,remove song,add song,add to playlist,remove from playlist,delete song,add music,remove music,move,move song,move position,show playlist,list playlist",
+      "activated": true
+    },
+    {
+      "name": "Playlist Position",
+      "mode": true,
+      "words": "move . * first | end | beginning | begin | last | ending",
+      "activated": true
+    }
+  ],
+  "regex_features": [
+    {
+      "name": "Artist - Title Track",
+      "pattern": "^.+\\s+\\-\\s+.+$",
+      "activated": true
+    },
+    {
+      "name": "Play Title By Artist Track",
+      "pattern": "^.+\\s+by\\s+.+$",
+      "activated": true
+    },
+    {
+      "name": "Playback Controls",
+      "pattern": "^next|previous|set|volume|volume|shuffle|repeat.*",
+      "activated": true
+    },
+    {
+      "name": "Playlist Command",
+      "pattern": "^remove|add|move|create|show|list.*playlist|position.*",
+      "activated": true
+    }
+  ],
+  "utterances": [
+    {
+      "text": "play shape of you by ed sheeran",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
+        },
+        {
+          "entity": "songartist",
+          "startPos": 21,
+          "endPos": 30
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play brainstorm by arctic monkeys",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 14
+        },
+        {
+          "entity": "songartist",
+          "startPos": 19,
+          "endPos": 32
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play journey - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 15,
+          "endPos": 23
+        },
+        {
+          "entity": "songartist",
+          "startPos": 5,
+          "endPos": 11
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play victims of love",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 26
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play the very long title of the song",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 35
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play the very long title of the song by the song artist",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 35
+        },
+        {
+          "entity": "songartist",
+          "startPos": 40,
+          "endPos": 54
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play open arms by journey",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
+        },
+        {
+          "entity": "songartist",
+          "startPos": 25,
+          "endPos": 31
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play magmahal please",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 12
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play open arms by journey",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "songartist",
+          "startPos": 18,
+          "endPos": 24
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play shape of you",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play open arms by journey please",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "songartist",
+          "startPos": 18,
+          "endPos": 31
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "can you play shape of you by ed sheeran please?",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 29,
+          "endPos": 38
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "play please forgive me",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "can you play shape of you by ed shareen please?",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 29,
+          "endPos": 38
+        }
+      ]
+    },
+    {
+      "text": "play please forgiv me by bryan adams",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 20
+        },
+        {
+          "entity": "songartist",
+          "startPos": 25,
+          "endPos": 35
+        }
+      ]
+    },
+    {
+      "text": "please play shape of you",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "please play shape of you by ed sheeran",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
+        },
+        {
+          "entity": "songartist",
+          "startPos": 28,
+          "endPos": 37
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play open arms by journey please?",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "songartist",
+          "startPos": 18,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "play matches by cash cash",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 11
+        },
+        {
+          "entity": "songartist",
+          "startPos": 16,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "please play hotline bling",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "play victims of love please!!",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "play matches",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "can you play open arms by journey please?",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 21
+        },
+        {
+          "entity": "songartist",
+          "startPos": 26,
+          "endPos": 32
+        }
+      ]
+    },
+    {
+      "text": "play cash cash - matches",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 17,
+          "endPos": 23
+        },
+        {
+          "entity": "songartist",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play again",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 9
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play magmahal",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 19
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play versace on the floor by bruno mars please",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 29,
+          "endPos": 45
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play shape of you please",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play versace on the floor",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 31
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play versace on the floor",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 24
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play it's my life by bon jovi",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
+        },
+        {
+          "entity": "songartist",
+          "startPos": 28,
+          "endPos": 35
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play hotline bling",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "play brainstorm",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 14
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play pause",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 9
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play open arms by journey!",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "songartist",
+          "startPos": 18,
+          "endPos": 24
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play cross my mind",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "hmmm, journey - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 6,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "please play into deep",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play open arms please",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please play shape of you!",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "ed sheeran - shape of you (latin remix) [feat. zion & lennox]",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 60
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "barry manilow - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "play it!",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 6
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play open rams",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 please play how am i suppose to love you",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 20,
+          "endPos": 47
+        }
+      ]
+    },
+    {
+      "text": "play please forgive me by bryan adams",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
+        },
+        {
+          "entity": "songartist",
+          "startPos": 26,
+          "endPos": 36
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "please forgive me by bryan adams",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 16
+        },
+        {
+          "entity": "songartist",
+          "startPos": 21,
+          "endPos": 31
+        }
+      ]
+    },
+    {
+      "text": "please play open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play shape of you by ed sheraan",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
+        },
+        {
+          "entity": "songartist",
+          "startPos": 21,
+          "endPos": 30
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play how deep is your love",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 25
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "rkcb - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 7,
+          "endPos": 15
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "ed sheeran - castle on the hill",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 30
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "journey - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 10,
+          "endPos": 18
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "open arms by aiza seguerra",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 8
+        },
+        {
+          "entity": "songartist",
+          "startPos": 13,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "open arms by creed",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 8
+        },
+        {
+          "entity": "songartist",
+          "startPos": 13,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "aiza seguerra - i'll be there for you",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 36
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "play what's up title",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play what's up",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "next",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "next song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "next song please",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "play previous song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::previous",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "play next song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "play previous",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::previous",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "previous song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::previous",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "play 5th song please",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "player_other",
+          "startPos": 9,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "play 3rd song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "player_other",
+          "startPos": 9,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "set volume to 2",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "volume 75%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "set volume to 90%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "shuffle tracks",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "player_other::tracks",
+          "startPos": 8,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "shuffle",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "play next",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "add victims of love to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 18
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "create playlist \"playlist name here\"",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::create",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_name",
+          "startPos": 17,
+          "endPos": 34
+        }
+      ]
+    },
+    {
+      "text": "add open arms by journey to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 12
+        },
+        {
+          "entity": "songartist",
+          "startPos": 17,
+          "endPos": 23
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "add journey - open arms to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 14,
+          "endPos": 22
+        },
+        {
+          "entity": "songartist",
+          "startPos": 4,
+          "endPos": 10
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "create playlist: this is a playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::create",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_name",
+          "startPos": 17,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "remove \"victims of love\" from playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 8,
+          "endPos": 22
+        },
+        {
+          "entity": "playlist_command::remove",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "remove the song title from playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 7,
+          "endPos": 20
+        },
+        {
+          "entity": "playlist_command::remove",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "move shape of you to 2nd position",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move this song to 5th position",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move journey - open arms to 3rd position",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 15,
+          "endPos": 23
+        },
+        {
+          "entity": "songartist",
+          "startPos": 5,
+          "endPos": 11
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move this song title to last",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "position::end",
+          "startPos": 24,
+          "endPos": 27
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move track 3 to the beginning",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "position::begin",
+          "startPos": 20,
+          "endPos": 28
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move track 5 to the end",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "position::end",
+          "startPos": 20,
+          "endPos": 22
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move this song title to 1st",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "move victims of love to last",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "position::end",
+          "startPos": 24,
+          "endPos": 27
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
+        },
+        {
+          "entity": "playlist_command::move",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "list playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "list my playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "show my playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "view my playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "create a playlist for me",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::create",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "okay create a playlist for me",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::create",
+          "startPos": 5,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "create playlist test playlist name",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::create",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_name",
+          "startPos": 16,
+          "endPos": 33
+        }
+      ]
+    },
+    {
+      "text": "what is that song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "who is the singer of this song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "who's the artist of this song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "who is the signer?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "can you tell me the name of that song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "what's currently playing?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "what's that song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "what is the name of that song?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
+      "text": "forget it",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "stop",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "no",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "abort",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "nevermind",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "cancel",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "nvm",
+      "intent": "CancelAction",
+      "entities": []
+    },
+    {
+      "text": "proceed",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "do it",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "sure",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "okay",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "yes",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "yes please",
+      "intent": "ConfirmAction",
+      "entities": []
+    },
+    {
+      "text": "hello bot",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "greeting",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "hi bot",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "greeting",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "hey",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "greeting",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "hello",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "greeting",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "hi",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "greeting",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    }
+  ]
+}

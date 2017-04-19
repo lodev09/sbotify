@@ -30,8 +30,8 @@ const bot = new builder.UniversalBot(connector, function (session) {
 
 const getSpotify = function(session, options) {
     var message = null;
-    if (session.conversationData.spotifyToken && session.conversationData.spotifyUser) {
-        return new Spotify(session.conversationData.spotifyToken, session.conversationData.spotifyUser);
+    if (session.userData.spotifyToken && session.userData.spotifyUser) {
+        return new Spotify(session.userData.spotifyToken, session.userData.spotifyUser);
     } else {
         message = 'okay before I do that, do you have a spotify account?'
         session.replaceDialog('AuthorizeSpotify', { message, options });
@@ -43,15 +43,23 @@ const createTrackCard = function(session, track) {
     var title = track.name;
     var album = track.album.name;
     var image = track.album.images[1];
-    var url = track.external_urls.spotify;
+    var url = 'spotify:' + track.uri;
 
     return new builder.HeroCard(session)
         .title(artist + ' - ' + title)
         .subtitle(album)
-        .images([
-            builder.CardImage.create(session, image.url)
-                .tap(builder.CardAction.showImage(session, image.url))
-        ])
+        .images([ builder.CardImage.create(session, image.url) ])
+        .tap(builder.CardAction.openUrl(session, url));
+}
+
+const createPlaylistCard = function(session, playlist) {
+    var image = playlist.images[0];
+    var url = 'spotify:' + playlist.uri;
+
+    return new builder.HeroCard(session)
+        .title(playlist.name)
+        .subtitle(playlist.tracks.total + ' tracks')
+        .images([ builder.CardImage.create(session, image.url) ])
         .tap(builder.CardAction.openUrl(session, url));
 }
 
@@ -69,7 +77,7 @@ app.get('/spotify/authorized', function(req, res) {
         bot.beginDialog(state.address, 'SpotifyAuthorized', {
             authCode: req.query.code,
             dialog: state.dialog,
-            playTrack: state.playTrack
+            dialogArgs: state.args
         });
 
     } else {
@@ -79,31 +87,59 @@ app.get('/spotify/authorized', function(req, res) {
 });
 
 // Enable Conversation Data persistence
-bot.set('persistConversationData', true);
+// bot.set('persistConversationData', true);
 
 const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
+const playPlaylist = async function(session, spotify, playlist) {
+    session.send('playing playlist **%s**...', playlist.name);
+
+    var playback = null;
+
+    if (session.userData.spotifyDevice) {
+        playback = await spotify.play(null, session.userData.spotifyDevice.id, playlist.uri);
+    }
+
+    if (playback) {
+        var card = createPlaylistCard(session, playlist);
+        var msg = new builder.Message(session)
+            .textFormat(builder.TextFormat.markdown)
+            .attachments([ card ]);
+        session.send(msg);
+    } else {
+        session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+    }
+}
+
 const playTrack = async function(session, spotify, query, message = true) {
-    session.send('looking for your music...');
+    session.send('looking for **%s**...', query);
     session.sendTyping();
     var tracks = await spotify.search(query.replace(' \' ', '\''));
 
     if (tracks) {
         var track = tracks[0];
 
-        await spotify.play(track.uri, session.conversationData.spotifyDevice.id);
-
-        if (message) {
-            var card = createTrackCard(session, track);
-
-            var msg = new builder.Message(session)
-                .textFormat(builder.TextFormat.markdown)
-                .attachments([ card ]);
-            session.send(msg);
+        var playback = null;
+        if (session.userData.spotifyDevice) {
+            await spotify.addTrackToPlaylist(track.uri, session.userData.spotifyPlaylist.id);
+            playback = await spotify.play(track.uri, session.userData.spotifyDevice.id, session.userData.spotifyPlaylist.uri);
         }
 
-        return tracks;
+        if (playback) {
+            if (message) {
+                var card = createTrackCard(session, track);
+
+                var msg = new builder.Message(session)
+                    .textFormat(builder.TextFormat.markdown)
+                    .attachments([ card ]);
+                session.send(msg);
+            }
+
+            return tracks;
+        } else {
+            session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+        }
     } else {
         session.endDialog('no music found, sorry.');
         return;
@@ -205,18 +241,109 @@ bot.dialog('Playback', async function(session, args) {
 });
 
 bot.dialog('PlaylistControl', function(session, args) {
+    if (!args) return session.endDialog();
+
+    console.log(args.intent.entities);
+
     var create = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::create');
     var show = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::show');
+    var browse = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::browse');
+    var clear = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::clear');
+
     if (create) {
         var playlistName = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_name');
         session.beginDialog('CreatePlaylist', { name: playlistName && playlistName.entity });
     } else if (show) {
-        session.beginDialog('SetupPlaylist');
+        session.beginDialog('ShowPlaylistQueue');
+    } else if (clear) {
+        session.beginDialog('ClearPlaylist');
+    } else if (browse) {
+        session.beginDialog('BrowsePlaylists');
     }
 
 }).triggerAction({
     matches: 'PlaylistControl'
+}).cancelAction('cancelPlaylistControl', 'k', {
+    matches: 'CancelAction'
 });
+
+bot.dialog('BrowsePlaylists', [
+    async function(session, args, next) {
+        var spotify = getSpotify(session, {
+            resumeDialog: 'BrowsePlaylists'
+        });
+
+        if (spotify) {
+            var data = await spotify.browsePlaylists();
+
+            if (data && data.length > 0) {
+                var playlists = {};
+
+                data.forEach((playlist) => {
+                    playlists[playlist.name] = playlist;
+                });
+
+                session.dialogData.playlists = playlists;
+                builder.Prompts.choice(session, 'here are fetured playlists :)', playlists, { listStyle: builder.ListStyle['button'] });
+            }
+        }
+    },
+    async function(session, results) {
+        if (results.response) {
+            if (results.response.entity && session.dialogData.playlists[results.response.entity]) {
+                var playlist = session.dialogData.playlists[results.response.entity];
+                var spotify = getSpotify(session);
+                if (spotify) {
+                    await playPlaylist(session, spotify, playlist);
+                }
+            }
+        }
+    }
+]).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
+
+bot.dialog('ShowPlaylistQueue', async function(session, args, next) {
+    var spotify = getSpotify(session, {
+        resumeDialog: 'ShowPlaylistQueue'
+    });
+
+    if (spotify) {
+        var data = await spotify.getPlaylistTracks(session.userData.spotifyPlaylist.id);
+        if (data && data.length > 0) {
+            var tracks = data.map((track, i) => i + '. ' + track.artists[0].name + ' - ' + track.name);
+
+            data.forEach((playlist) => {
+                playlists[playlist.name] = playlist;
+            });
+
+            builder.Prompts.choice(session, 'here are songs in queue...', tracks, { listStyle: builder.ListStyle['button'] });
+            session.endDialogWithResult();
+        } else {
+            session.send('no tracks found :(\n\ntype something like "queue ed sheeran - shape of you" to add it to the playlist queue.');
+            session.endDialogWithResult();
+        }
+    }
+});
+
+bot.dialog('ClearPlaylist', [
+    function(session, args) {
+        builder.Prompts.confirm(session, 'are you sure you want to clear queue?');
+    },
+    async function(session, results) {
+        var spotify = getSpotify(session, { resumeDialog: 'ClearPlaylist' });
+        if (spotify) {
+            if (results.response) {
+                var result = await spotify.clearPlaylist(session.userData.spotifyPlaylist.id);
+                session.send('done (y)');
+                session.endDialogWithResult();
+            } else {
+                session.send('I thought so ;)');
+                session.endDialogWithResult({
+                    resumed: builder.ResumeReason.canceled
+                });
+            }
+        }
+    }
+]);
 
 bot.dialog('SongQuery', async function(session, args) {
     var spotify = getSpotify(session, { resumeDialog: 'SongQuery' });
@@ -242,19 +369,26 @@ bot.dialog('PlayMusic', [
     async function(session, args) {
         if (!args) return session.endDialog();
 
-        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+        var trackQuery = null;
 
-        var play = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::play');
-        console.log(play);
+        if (args.playTrack) {
+            trackQuery = args.playTrack;
+        } else {
+            var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+            var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
-        if (songtitle) {
-            var track = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
-            var spotify = getSpotify(session, { playTrack: track });
+            trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+        }
+
+        if (trackQuery) {
+            var spotify = getSpotify(session, {
+                resumeDialog: 'PlayMusic',
+                dialogArgs: { playTrack: trackQuery }
+            });
 
             if (spotify) {
-                const tracks = await playTrack(session, spotify, track);
-                if (tracks && tracks.length > 1 && !songartist) {
+                const tracks = await playTrack(session, spotify, trackQuery);
+                if (tracks && tracks.length > 1) {
                     var artists = [];
 
                     tracks.forEach((track) => {
@@ -296,23 +430,34 @@ bot.dialog('SpotifySetDevice', [
     async function(session, args, next) {
         var spotify = getSpotify(session, {
             resumeDialog: 'SpotifySetDevice',
-            playTrack: args.playTrack
+            dialogArgs: { playTrack: args && args.playTrack }
         });
 
         if (spotify) {
             var devices = {};
-            var data = await spotify.getDevices();
-            if (data && data.length > 0) {
-                data.forEach((device) => {
+
+            var devicesData = await spotify.getDevices();
+
+            if (devicesData && devicesData.length > 0) {
+                devicesData.forEach((device) => {
                     devices[device.type + ' - ' + device.name] = device;
                 });
 
                 session.dialogData.devices = devices;
-                session.dialogData.playTrack = args.playTrack;
+                session.dialogData.playTrack = args && args.playTrack;
 
-                builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['button'] });
+                if (devicesData.length > 1) {
+                    builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['button'] });
+                } else {
+                    var defaultDevice = devicesData[0].type + ' - ' + devicesData[0].name;
+                    session.send('playing on device **%s**', defaultDevice);
+                    next({ response: { entity: defaultDevice } })
+                }
             } else {
-                session.endDialog('no devices found. [open spotify](spotify:open) and try again :)');
+                session.send('no devices found. [open spotify](spotify:open) and try again :)');
+                session.endDialogWithResult({
+                    resumed: builder.ResumeReason.notCompleted
+                });
             }
         }
     },
@@ -320,12 +465,12 @@ bot.dialog('SpotifySetDevice', [
         if (results.response) {
             if (results.response.entity) {
                 var device = session.dialogData.devices[results.response.entity];
-                session.conversationData.spotifyDevice = device;
-                session.send('got it (y)');
+                session.userData.spotifyDevice = device;
+                session.send('(y)');
 
                 var spotify = getSpotify(session, {
                     resumeDialog: 'SpotifySetDevice',
-                    playTrack: session.dialogData.playTrack
+                    dialogArgs: { playTrack: session.dialogData.playTrack }
                 });
 
                 if (spotify) {
@@ -335,7 +480,7 @@ bot.dialog('SpotifySetDevice', [
                     }
                 }
 
-                session.endDialog();
+                session.endDialogWithResult();
             } else {
                 session.endDialog('no problem - going to use active device then ;)');
             }
@@ -350,19 +495,22 @@ bot.dialog('CreatePlaylist', [
         if (args && args.name) {
             next({ response: args.name });
         } else {
-            builder.Prompts.text(session, 'what\'s the name of your playlist?');
+            session.send('creating your playlist...');
+            builder.Prompts.text(session, 'what\'s the name?');
         }
     },
     async function(session, results) {
         var spotify = getSpotify(session, {
-            resumeDialog: 'CreatePlaylist'
+            resumeDialog: 'CreatePlaylist',
+            dialogArgs: results.response
         });
 
         if (spotify) {
             if (results.response) {
                 var playlist = await spotify.createPlaylist(results.response);
                 if (playlist) {
-                    session.send('playlist created (y)');
+                    session.send('playlist **%s** created (y)', results.response);
+                    session.userData.spotifyPlaylist = playlist;
                     session.endDialogWithResult({
                         response: { playlist }
                     });
@@ -377,72 +525,42 @@ bot.dialog('CreatePlaylist', [
     }
 ]);
 
-bot.dialog('SetupPlaylist', [
+bot.dialog('SpotifyAuthorized', [
     async function(session, args, next) {
-        var spotify = getSpotify(session, {
-            resumeDialog: 'SetupPlaylist'
-        });
+        // authorize spotify
+        var tokenData = await Spotify.initToken(args.authCode);
+        var data = await new Spotify(tokenData).init();
 
-        if (spotify) {
-            if (session.conversationData.spotifyPlaylist) {
-                next({ response: { entity: session.conversationData.spotifyPlaylist.name } });
+        if (data && tokenData) {
+            session.send('ty. setting up stuff...');
+
+            session.dialogData.args = args;
+            session.userData.spotifyUser = data.userData;
+            session.userData.spotifyToken = tokenData;
+
+            if (!data.playlist) {
+                session.beginDialog('CreatePlaylist', { name: process.env.SPOTIFY_QUEUE_PLAYLIST_NAME });
             } else {
-                var data = await spotify.getPlaylists();
-                if (data && data.length > 0) {
-                    var playlists = {};
-
-                    data.forEach((playlist) => {
-                        playlists[playlist.name] = playlist;
-                    });
-
-                    session.dialogData.playlists = playlists;
-                    builder.Prompts.choice(session, 'choose a playlist or create one :)', playlists, { listStyle: builder.ListStyle['button'] });
-                } else {
-                    session.beginDialog('CreatePlaylist');
-                }
+                session.userData.spotifyPlaylist = data.playlist;
+                next();
             }
+
+        } else {
+            session.send('something went wrong ;(... restarting over.');
+            session.replaceDialog('AuthorizeSpotify');
         }
     },
     function(session, results) {
-        if (results.response) {
-            if (session.dialogData.playlists[results.response.entity]) {
-                var playlist = session.dialogData.playlists[results.response.entity];
-                session.conversationData.spotifyPlaylist = playlist;
-                session.send('playlist set (y)');
-                session.endDialogWithResult({
-                    response: { playlist }
-                });
-            } else if (results.response.contains('create')) {
-                session.beginDialog('CreatePlaylist');
-            }
-        }
-    }
-]).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
-
-bot.dialog('SpotifyAuthorized', [
-    async function(session, args) {
-        // authorize spotify
-        var tokenData = await Spotify.initToken({
-            clientId: process.env.SPOTIFY_CLIENT_ID,
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-            redirectUri: process.env.SPOTIFY_REDIRECT_URI,
-            authCode: args.authCode
-        });
-
-        var userData = await new Spotify(tokenData).getUserData();
-
-        session.conversationData.spotifyToken = tokenData;
-        session.conversationData.spotifyUser = userData;
-        session.dialogData.args= args;
-        session.send('thanks!');
-        session.beginDialog('SetupPlaylist');
+        session.beginDialog('SpotifySetDevice');
     },
     async function(session, results) {
-        var args = session.dialogData.args;
-        if (args && args.dialog) {
-            session.beginDialog(args.dialog, { playTrack: args.playTrack });
-        } else {
-            session.endDialog('all set!');
+        if (results.response) {
+            var args = session.dialogData.args;
+            if (args && args.dialog) {
+                session.beginDialog(args.dialog, args && args.dialogArgs);
+            } else {
+                session.endDialog('all set!');
+            }
         }
     }
 ]);
@@ -450,29 +568,26 @@ bot.dialog('SpotifyAuthorized', [
 bot.dialog('AuthorizeSpotify', [
     function(session, args) {
         session.dialogData.resumeDialog = args.options && args.options.resumeDialog;
-        session.dialogData.playTrack = args.options && args.options.playTrack;
+        session.dialogData.dialogArgs = args.options && args.options.dialogArgs;
         builder.Prompts.confirm(session, args.message ? args.message : 'do you want me to use your spotify account to play music?');
     },
     function(session, results) {
         if (results.response) {
             var state = Buffer.from(JSON.stringify({
                 address: session.message.address,
-                dialog: session.dialogData.resumeDialog || 'SpotifySetDevice',
-                playTrack: session.dialogData.playTrack
+                dialog: session.dialogData.resumeDialog,
+                args: session.dialogData.dialogArgs
             })).toString('base64');
 
-            session.send('good, [click here](%s) to authorize me', 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(state));
-            session.endDialogWithResult();
+            session.endDialog('good, [click here](%s) to authorize me', 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(state));
 
         } else {
-            session.send('k nvm');
-            session.endDialogWithResult();
+            session.endDialog('k nvm');
         }
     }
 ]).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
 
 bot.dialog('DeleteUserData', function(session, args) {
-    session.conversationData = {};
     session.userData = {};
 
     session.endDialog(args.message ? args.message : 'all clear! ;)');

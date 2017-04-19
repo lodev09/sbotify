@@ -11,24 +11,28 @@ class Spotify {
         this.userData = userData;
     }
 
-    static initToken({ clientId, clientSecret, authCode, redirectUri}) {
+    static requestOk(response) {
+        return response.statusCode === 200 || response.statusCode === 201 || response.statusCode === 204;
+    }
+
+    static initToken(authCode) {
         return new Promise((resolve, reject) => {
 
             const options = {
                 url: 'https://accounts.spotify.com/api/token',
                     headers: {
-                    'Authorization': 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64'))
+                    'Authorization': 'Basic ' + (Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64'))
                 },
                 form: {
                     'grant_type': 'authorization_code',
                     'code': authCode,
-                    'redirect_uri': redirectUri
+                    'redirect_uri': process.env.SPOTIFY_REDIRECT_URI
                 },
                 json: true
             };
 
             request.post(options, (error, response, body) => {
-                if (!error && response.statusCode === 200) {
+                if (!error && Spotify.requestOk(response)) {
                     resolve(Spotify.createToken(body));
                 } else {
                     reject(response.statusCode)
@@ -57,7 +61,7 @@ class Spotify {
                 const options = {
                     url: 'https://accounts.spotify.com/api/token',
                         headers: {
-                        'Authorization': 'Basic ' + (new Buffer(this.clientId + ':' + this.clientSecret).toString('base64'))
+                        'Authorization': 'Basic ' + (Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64'))
                     },
                     form: {
                         'grant_type': 'refresh_token',
@@ -68,7 +72,7 @@ class Spotify {
                 };
 
                 request.post(options, (error, response, body) => {
-                    if (!error && response.statusCode === 200) {
+                    if (!error && Spotify.requestOk(response)) {
                         this.tokenData = Spotify.createToken(body);
                         resolve(body.access_token);
                     } else {
@@ -89,16 +93,17 @@ class Spotify {
                 var token = await this.getAccessToken();
                 var options = {
                     url: 'https://api.spotify.com/v1' + endPoint,
-                    body,
                     headers: { 'Authorization': 'Bearer ' + token },
                     json: true
                 };
 
+                if (body) options.body = body;
+
                 console.log('POST: ' + endPoint, body);
 
                 request.post(options, function(error, response, body) {
-                    if (!error) {
-                        resolve(body);
+                    if (!error && Spotify.requestOk(response)) {
+                        resolve(body || true);
                     } else {
                         reject(response.statusCode);
                     }
@@ -115,16 +120,45 @@ class Spotify {
                 var token = await this.getAccessToken();
                 var options = {
                     url: 'https://api.spotify.com/v1' + endPoint,
-                    body,
                     headers: { 'Authorization': 'Bearer ' + token },
                     json: true
                 };
 
+                if (body) options.body = body;
+
                 console.log('PUT: ' + endPoint, body);
 
                 request.put(options, function(error, response, body) {
-                    if (!error && response.statusCode === 200) {
-                        resolve(body);
+                    if (!error && Spotify.requestOk(response)) {
+                        resolve(body || true || true);
+                    } else {
+                        console.log(body);
+                        reject(response.statusCode);
+                    }
+                });
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    delete(endPoint, body) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var token = await this.getAccessToken();
+                var options = {
+                    url: 'https://api.spotify.com/v1' + endPoint,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    json: true
+                };
+
+                if (body) options.body = body;
+
+                console.log('DELETE: ' + endPoint, body);
+
+                request.delete(options, function(error, response, body) {
+                    if (!error && Spotify.requestOk(response)) {
+                        resolve(body || true || true);
                     } else {
                         reject(response.statusCode);
                     }
@@ -154,8 +188,8 @@ class Spotify {
                 console.log('GET: ' + endPoint);
 
                 request.get(options, function(error, response, body) {
-                    if (!error && response.statusCode === 200) {
-                        resolve(body);
+                    if (!error && Spotify.requestOk(response)) {
+                        resolve(body || true);
                     } else {
                         reject(response.statusCode);
                     }
@@ -164,6 +198,27 @@ class Spotify {
                 reject(err);
             }
         });
+    }
+
+    async init() {
+        try {
+            var userData = await this.getUserData();
+
+            var botPlaylist = null;
+            var playlistData = await this.getPlaylists();
+
+            if (playlistData) {
+                playlistData.forEach((playlist) => {
+                    if (playlist.owner.id === userData.id && playlist.name === process.env.SPOTIFY_QUEUE_PLAYLIST_NAME) {
+                        botPlaylist = playlist;
+                    }
+                })
+            }
+
+            return { userData, playlist: botPlaylist };
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     async getUserData() {
@@ -200,11 +255,18 @@ class Spotify {
         }
     }
 
-    async play(uri = null, deviceId = null) {
+    async play(uri = null, deviceId = null, playlistUri = null) {
         try {
-            await this.put('/me/player/play' + (deviceId ? '?device_id=' + deviceId : ''), uri && {
-                uris: [ uri ]
-            });
+            var options = null;
+            if (uri || playlistUri) {
+                options = {};
+
+                // if (uri) options.uris = [ uri ];
+                if (playlistUri) options.context_uri = playlistUri;
+                if (uri) options.offset = { uri };
+            }
+
+            return await this.put('/me/player/play' + (deviceId ? '?device_id=' + deviceId : ''), options);
         } catch (err) {
             console.log(err);
         }
@@ -213,7 +275,7 @@ class Spotify {
     async getDevices() {
         try {
             var data = await this.get('/me/player/devices');
-            return data.devices;
+            return data && data.devices;
         } catch (err) {
             console.log(err);
         }
@@ -239,6 +301,15 @@ class Spotify {
         }
     }
 
+    async browsePlaylists() {
+        try {
+            var data = await this.get('/browse/featured-playlists');
+            return data && data.playlists.items;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async getPlaylists() {
         try {
             var data = await this.get('/me/playlists');
@@ -257,6 +328,53 @@ class Spotify {
             });
         } catch (err) {
             console.log(err)
+        }
+    }
+
+    async getPlaylistTracks(playlistId) {
+        try {
+            var data = await this.get('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks');
+            return data && data.items.map(item => item.track);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async addTrackToPlaylist(uri, playlistId) {
+        try {
+            var currentTracks = await this.getPlaylistTracks(playlistId);
+            for (var i in currentTracks) {
+                var track = currentTracks[i];
+                if (track.uri === uri) {
+                    console.log('addTrackToPlaylist: existing track');
+                    return true;
+                }
+            }
+
+            return await this.post('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks', {
+                uris: [ uri ]
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async clearPlaylist(playlistId) {
+        try {
+            var tracksData = await this.getPlaylistTracks(playlistId);
+            if (tracksData) {
+                console.log(tracksData);
+                var tracks = tracksData.map(track => {
+                    return { uri: track.uri }
+                });
+
+                return await this.delete('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks', {
+                    tracks
+                });
+
+            } else return false;
+        } catch (err) {
+            console.log(err);
         }
     }
 }
