@@ -311,10 +311,6 @@ bot.dialog('ShowPlaylistQueue', async function(session, args, next) {
         if (data && data.length > 0) {
             var tracks = data.map((track, i) => i + '. ' + track.artists[0].name + ' - ' + track.name);
 
-            data.forEach((playlist) => {
-                playlists[playlist.name] = playlist;
-            });
-
             builder.Prompts.choice(session, 'here are songs in queue...', tracks, { listStyle: builder.ListStyle['button'] });
             session.endDialogWithResult();
         } else {
