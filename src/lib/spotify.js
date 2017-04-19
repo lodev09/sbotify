@@ -3,7 +3,6 @@
 // https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri=https%3A%2F%2Fwww.lodev09.com%2Fspotify%2Fcallback&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read
 
 import request from 'request';
-import moment from 'moment';
 
 class Spotify {
 
@@ -294,6 +293,14 @@ class Spotify {
         }
     }
 
+    async getCurrentPlayback() {
+        try {
+            return await this.get('/me/player');
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async browsePlaylists() {
         try {
             var data = await this.get('/browse/featured-playlists');
@@ -371,30 +378,90 @@ class Spotify {
         }
     }
 
-    async playback(args, deviceId = null) {
+    async playback(args, deviceId = null, callback) {
         try {
             if (args && args.command) {
                 var track = await this.getCurrentTrack();
+                var playback = await this.getCurrentPlayback();
+
                 if (track) {
+                    var trackDuration = track.duration_ms;
                     var deviceIdParam = deviceId ? '?device_id=' + deviceId : '';
                     switch (args.command) {
                         case 'play':
                         case 'pause':
+                            callback(args.command);
                             return await this.put('/me/player/' + args.command + deviceIdParam);
                             break;
                         case 'previous':
                         case 'next':
+                            callback(args.command);
                             return await this.post('/me/player/' + args.command + deviceIdParam);
                             break;
                         case 'seek':
-                            var millisecond = 0;
+                            var duration = null;
                             if (args.time) {
-                                millisecond = moment(args.time).millisecond();
-                                moment.duration('PT-6H3M');
+                                duration = args.time.split(':').reverse().reduce((prev, curr, i) => prev + curr * Math.pow(60, i), 0) * 1000;
+                            } else if (args.percentage) {
+                                percent = parseInt(args.percentage.replace('%', '').trim()) / 100;
+                                duration = trackDuration * percent;
+                            } else if (args.number) {
+                                duration = parseFloat(args.number.trim()) * 60 * 1000;
+                            }
+
+                            if (duration) {
+                                callback((duration / 1000) + ' seconds');
+                                return await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + Math.min(duration, trackDuration));
                             }
 
                             break;
+                        case 'repeat':
+                            if (playback) {
+                                var states = ['off', 'track', 'context'];
+                                var currentState = playback.repeat_state;
 
+                                var stateIndex = states.indexOf(currentState);
+                                if (stateIndex + 1 > states.length) {
+                                    stateIndex = 0;
+                                }
+
+                                var state = states[stateIndex + 1];
+
+                                callback(state);
+                                return await this.put('/me/player/repeat?state=' + state);
+                            }
+
+                            break;
+                        case 'shuffle':
+                            if (playback) {
+                                var state = null;
+
+                                if (args.switchOn) {
+                                    state = 'true';
+                                } else if (args.switchOff) {
+                                    state = 'false';
+                                } else {
+                                    var currentShuffleState = playback.shuffle_state;
+                                    state = !currentShuffleState ? 'true' : 'false';
+                                }
+
+                                callback(state === 'true' ? 'on' : 'off');
+                                return await this.put('/me/player/shuffle?state=' + state);
+                            }
+
+                            break;
+                        case 'volume':
+                            var percent = 0;
+                            if (args.percentage) {
+                                percent = parseInt(args.percentage.replace('%', '').trim());
+                            } else if (args.number) {
+                                percent = Math.min(parseFloat(args.number.trim()), 100);
+                            }
+
+                            callback(percent + '%');
+                            return await this.put('/me/player/volume?volume_percent=' + percent);
+
+                            break;
                     }
                 }
             }

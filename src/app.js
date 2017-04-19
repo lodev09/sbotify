@@ -5,7 +5,6 @@ import http from 'http';
 import SocketIO from 'socket.io';
 import builder from 'botbuilder';
 import uuid from 'uuid';
-import moment from 'moment';
 
 import Spotify from './lib/spotify';
 
@@ -241,7 +240,7 @@ bot.dialog('Compliment', function(session, args) {
 bot.dialog('PlayerControl', function(session, args) {
     if (!args) return session.endDialog('use common playback words like "play", "pause", etc.');
 
-    var commands = ['next', 'previous', 'repeat', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
+    var commands = ['next', 'previous', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
 
     for (var i in commands) {
         var command = commands[i];
@@ -251,22 +250,17 @@ bot.dialog('PlayerControl', function(session, args) {
             var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
             var percentage = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.percentage');
             var time = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.datetime.time');
+            var switchOn = builder.EntityRecognizer.findEntity(args.intent.entities, 'switch::on');
+            var switchOff = builder.EntityRecognizer.findEntity(args.intent.entities, 'switch::off');
 
-            var options = {
-                percentage,
-                number,
-                time: moment.duration(time.resolution.time).milliseconds(),
-                command
-            };
-
-            console.log(options);
-
-            /*return session.beginDialog('ApplyPlayerCommand', {
+            return session.beginDialog('ApplyPlayerCommand', {
                 percentage: percentage && percentage.entity,
                 number: number && number.entity,
                 time: time && time.entity,
+                switchOn,
+                switchOff,
                 command
-            });*/
+            }, session.userData.spotifyDevice.id);
         }
     }
 
@@ -283,8 +277,9 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
     });
 
     if (spotify) {
-        var result = await spotify.playback(args);
-        session.send(args.command + '? got it (y)');
+        var result = await spotify.playback(args, session.userData.spotifyDevice.id, (message) => {
+            session.send('**' + args.command + ' : %s** (y)', message);
+        });
         session.endDialogWithResult({ response: true });
     }
 });
@@ -418,64 +413,49 @@ bot.dialog('SongQuery', async function(session, args) {
     matches: 'SongQuery'
 });
 
-bot.dialog('PlayMusic', [
-    async function(session, args) {
-        if (!args) return session.endDialog();
+bot.dialog('PlayMusic', async function(session, args) {
+    if (!args) return session.endDialog();
 
-        var trackQuery = null;
+    var trackQuery = null;
 
-        if (args.playTrack) {
-            trackQuery = args.playTrack;
-        } else {
-            var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-            var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+    if (args.playTrack) {
+        trackQuery = args.playTrack;
+    } else {
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
-            trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
-        }
+        trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+    }
 
-        if (trackQuery) {
-            var spotify = getSpotify(session, {
-                resumeDialog: 'PlayMusic',
-                dialogArgs: { playTrack: trackQuery }
-            });
+    if (trackQuery) {
+        var spotify = getSpotify(session, {
+            resumeDialog: 'PlayMusic',
+            dialogArgs: { playTrack: trackQuery }
+        });
 
-            if (spotify) {
-                const tracks = await playTrack(session, spotify, trackQuery);
-                if (tracks && tracks.length > 1) {
-                    var artists = [];
+        if (spotify) {
+            const tracks = await playTrack(session, spotify, trackQuery);
+            if (tracks && tracks.length > 1) {
+                var artists = [];
 
-                    tracks.forEach((track) => {
-                        var artist = track.artists[0];
-                        var query = artist.name + ' - ' + track.name;
+                tracks.forEach((track) => {
+                    var artist = track.artists[0];
+                    var query = artist.name + ' - ' + track.name;
 
-                        if (artists.indexOf(query) === -1) {
-                            artists.push(query);
-                        }
-                    });
+                    if (artists.indexOf(query) === -1) {
+                        artists.push(query);
+                    }
+                });
 
-                    builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
-                } else {
-                    session.endDialog();
-                }
+                builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
             }
-        } else {
+
             session.endDialog();
         }
-    },
-    async function(session, results) {
-        if (results.response) {
-            if (results.response.entity) {
-                var spotify = getSpotify(session);
-                if (spotify) {
-                    await playTrack(session, spotify, results.response.entity);
-                    session.endDialog('(y)');
-                }
-            } else {
-                session.endDialog();
-            }
-        }
+    } else {
+        session.endDialog();
     }
-]).triggerAction({
+}).triggerAction({
     matches: 'PlayMusic'
 });
 
