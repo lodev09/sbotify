@@ -255,7 +255,7 @@ bot.dialog('PlayerControl', function(session, args) {
             var options = {
                 percentage,
                 number,
-                time: moment.resolution(time.resolution.time).milliseconds(),
+                time: moment.duration(time.resolution.time).milliseconds(),
                 command
             };
 
