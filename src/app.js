@@ -5,6 +5,7 @@ import http from 'http';
 import SocketIO from 'socket.io';
 import builder from 'botbuilder';
 import uuid from 'uuid';
+import moment from 'moment';
 
 import Spotify from './lib/spotify';
 
@@ -33,7 +34,7 @@ const getSpotify = function(session, options) {
     if (session.userData.spotifyToken && session.userData.spotifyUser) {
         return new Spotify(session.userData.spotifyToken, session.userData.spotifyUser);
     } else {
-        message = 'okay before I do that, do you have a spotify account?'
+        message = 'okay before I do that, do you have a spotify account?\n\n**Warning: you must be a premium user**'
         session.replaceDialog('AuthorizeSpotify', { message, options });
     }
 }
@@ -112,8 +113,28 @@ const playPlaylist = async function(session, spotify, playlist) {
     }
 }
 
+const queueTrack = async function(session, spotify, query, message = true) {
+    session.send('looking for **%s**...', query.replace(' \' ', '\''));
+    session.sendTyping();
+    var tracks = await spotify.search(query.replace(' \' ', '\''));
+
+    if (tracks) {
+        var track = tracks[0];
+
+        var playback = await spotify.addTrackToPlaylist(track.uri, session.userData.spotifyPlaylist.id);
+        if (message) {
+            session.send('**%s** by **%s** added to queue (y)', track.name, track.artists[0].name);
+        }
+
+        return tracks;
+    } else {
+        session.endDialog('no music found, sorry.');
+        return;
+    }
+}
+
 const playTrack = async function(session, spotify, query, message = true) {
-    session.send('looking for **%s**...', query);
+    session.send('looking for **%s**...', query.replace(' \' ', '\''));
     session.sendTyping();
     var tracks = await spotify.search(query.replace(' \' ', '\''));
 
@@ -217,48 +238,84 @@ bot.dialog('Compliment', function(session, args) {
     matches: /^thanks|ok|okay/i
 });
 
-bot.dialog('Playback', async function(session, args) {
-    var spotify = getSpotify(session);
+bot.dialog('PlayerControl', function(session, args) {
+    if (!args) return session.endDialog('use common playback words like "play", "pause", etc.');
 
-    if (spotify) {
-        var match = args.intent.matched[0];
-        switch (match) {
-            case 'pause':
-            case 'stop':
-                await spotify.pause();
-                break;
-            case 'play':
-            case 'resume':
-                await spotify.play();
-                break;
+    var commands = ['next', 'previous', 'repeat', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
+
+    for (var i in commands) {
+        var command = commands[i];
+
+        var commandEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::' + command);
+        if (commandEntity) {
+            var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
+            var percentage = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.percentage');
+            var time = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.datetime.time');
+
+            var options = {
+                percentage,
+                number,
+                time: moment.resolution(time.resolution.time).milliseconds(),
+                command
+            };
+
+            console.log(options);
+
+            /*return session.beginDialog('ApplyPlayerCommand', {
+                percentage: percentage && percentage.entity,
+                number: number && number.entity,
+                time: time && time.entity,
+                command
+            });*/
         }
-
-        session.endDialog('(y)');
     }
 
 }).triggerAction({
-    matches: /^play|pause|resume|stop$/i
+    matches: 'PlayerControl'
+});
+
+bot.dialog('ApplyPlayerCommand', async function(session, args) {
+    var spotify = getSpotify(session, {
+        resumeDialog: 'ApplyPlayerCommand',
+        dialogArgs: {
+            ...args
+        }
+    });
+
+    if (spotify) {
+        var result = await spotify.playback(args);
+        session.send(args.command + '? got it (y)');
+        session.endDialogWithResult({ response: true });
+    }
 });
 
 bot.dialog('PlaylistControl', function(session, args) {
-    if (!args) return session.endDialog();
-
-    console.log(args.intent.entities);
+    if (!args) return session.endDialog('use command playlist words like "browse", "show", "clear", etc.');
 
     var create = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::create');
     var show = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::show');
     var browse = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::browse');
     var clear = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::clear');
+    var add = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::add');
 
-    if (create) {
-        var playlistName = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_name');
-        session.beginDialog('CreatePlaylist', { name: playlistName && playlistName.entity });
-    } else if (show) {
+    if (show) {
         session.beginDialog('ShowPlaylistQueue');
     } else if (clear) {
         session.beginDialog('ClearPlaylist');
     } else if (browse) {
         session.beginDialog('BrowsePlaylists');
+    } else if (add) {
+        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+
+        if (songtitle) {
+            var trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+            session.beginDialog('AddMusic', {
+                trackQuery
+            });
+        }
+    } else {
+        session.endDialog('not sure what you mean there.');
     }
 
 }).triggerAction({
@@ -422,6 +479,57 @@ bot.dialog('PlayMusic', [
     matches: 'PlayMusic'
 });
 
+bot.dialog('AddMusic', [
+    async function(session, args) {
+        if (!args) return session.endDialogWithResult();
+
+        var trackQuery = args.trackQuery;
+
+        if (trackQuery) {
+            var spotify = getSpotify(session, {
+                resumeDialog: 'AddMusic',
+                dialogArgs: { queueTrack: trackQuery }
+            });
+
+            if (spotify) {
+                const tracks = await queueTrack(session, spotify, trackQuery);
+                if (tracks && tracks.length > 1) {
+                    var artists = [];
+
+                    tracks.forEach((track) => {
+                        var artist = track.artists[0];
+                        var query = artist.name + ' - ' + track.name;
+
+                        if (artists.indexOf(query) === -1) {
+                            artists.push(query);
+                        }
+                    });
+
+                    builder.Prompts.choice(session, 'you might want to check some of these...', artists, { listStyle: builder.ListStyle['button'] });
+                } else {
+                    session.endDialogWithResult();
+                }
+            }
+        } else {
+            session.endDialogWithResult();
+        }
+    },
+    async function(session, results) {
+        if (results.response) {
+            if (results.response.entity) {
+                var spotify = getSpotify(session);
+                if (spotify) {
+                    await queueTrack(session, spotify, results.response.entity);
+                    session.send('(y)');
+                    session.endDialogWithResult();
+                }
+            } else {
+                session.endDialogWithResult();
+            }
+        }
+    }
+]);
+
 bot.dialog('SpotifySetDevice', [
     async function(session, args, next) {
         var spotify = getSpotify(session, {
@@ -528,7 +636,7 @@ bot.dialog('SpotifyAuthorized', [
         var data = await new Spotify(tokenData).init();
 
         if (data && tokenData) {
-            session.send('ty. setting up stuff...');
+            session.send('thanks! just a moment...');
 
             session.dialogData.args = args;
             session.userData.spotifyUser = data.userData;

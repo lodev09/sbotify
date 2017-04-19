@@ -3,6 +3,7 @@
 // https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri=https%3A%2F%2Fwww.lodev09.com%2Fspotify%2Fcallback&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read
 
 import request from 'request';
+import moment from 'moment';
 
 class Spotify {
 
@@ -247,14 +248,6 @@ class Spotify {
         }
     }
 
-    async pause() {
-        try {
-            await this.put('/me/player/pause');
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
     async play(uri = null, deviceId = null, playlistUri = null) {
         try {
             var options = null;
@@ -373,6 +366,40 @@ class Spotify {
                 });
 
             } else return false;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async playback(args, deviceId = null) {
+        try {
+            if (args && args.command) {
+                var track = await this.getCurrentTrack();
+                if (track) {
+                    var deviceIdParam = deviceId ? '?device_id=' + deviceId : '';
+                    switch (args.command) {
+                        case 'play':
+                        case 'pause':
+                            return await this.put('/me/player/' + args.command + deviceIdParam);
+                            break;
+                        case 'previous':
+                        case 'next':
+                            return await this.post('/me/player/' + args.command + deviceIdParam);
+                            break;
+                        case 'seek':
+                            var millisecond = 0;
+                            if (args.time) {
+                                millisecond = moment(args.time).millisecond();
+                                moment.duration('PT-6H3M');
+                            }
+
+                            break;
+
+                    }
+                }
+            }
+
+            return false;
         } catch (err) {
             console.log(err);
         }
