@@ -312,20 +312,18 @@ bot.dialog('Greeting', [
 });
 
 bot.dialog('Compliment', function(session, args) {
-    var match = args.intent.matched[0];
+    var name = session.message.user ? session.message.user.name : null;
 
-    switch (match) {
-        case 'thanks':
-            session.endDialog('no problem!');
-            break;
-        case 'ok':
-        case 'okay':
-            session.endDialog('(y)');
-            break;
-    }
+    session.endDialog([
+        'no problem %s!',
+        '(y)',
+        'okay %s',
+        'sure %s',
+        'anytime ;)'
+    ], name || 'user');
 
 }).triggerAction({
-    matches: /^thanks|ok|okay/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:thanks|thank you)/i
 });
 
 bot.dialog('PlayerControl', function(session, args) {
@@ -981,5 +979,5 @@ bot.dialog('DeleteUserData', function(session, args) {
 
     session.endDialog(args.message ? args.message : 'all clear! ;)');
 }).triggerAction({
-    matches: /^reset/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:reset|reload)/i
 });
