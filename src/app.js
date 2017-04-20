@@ -1043,7 +1043,7 @@ bot.dialog('AuthorizeSpotify', [
         }
     }
 ]).triggerAction({
-    matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|load)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|start|load)/i
 }).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
 
 bot.dialog('DeleteUserData', function(session, args) {
