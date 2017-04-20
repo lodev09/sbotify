@@ -1059,5 +1059,5 @@ bot.dialog('DeleteUserData', function(session, args) {
         'k bye'
     ]);
 }).triggerAction({
-    matches: /^(?:\@[\w-_]+\s+)?(?:reset|terminate|exit|shutdown|turn off)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:reset|terminate|exit|shutdown|turn off|quit)/i
 });
