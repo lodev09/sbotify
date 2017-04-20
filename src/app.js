@@ -1010,7 +1010,16 @@ bot.dialog('AuthorizeSpotify', [
                 args: session.dialogData.dialogArgs
             })).toString('base64');
 
-            session.endDialog('good, [click here](%s) to authorize me', 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(state));
+            session.send('good. click below to authorize me...');
+            var msg = new builder.Message(session)
+                .attachments([
+                    new builder.ThumbnailCard(session)
+                        .title("accounts.spotify.com")
+                        .subtitle("Authorize bot to play music, search and do some cool stuff.")
+                        .tap(builder.CardAction.openUrl(session, 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(state)))
+                ]);
+
+            session.endDialog(msg);
 
         } else {
             session.endDialog('k nvm');
