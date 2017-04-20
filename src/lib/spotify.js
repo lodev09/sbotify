@@ -5,12 +5,6 @@ import request from 'request';
 class Spotify {
 
     static playbackCommands = ['next', 'previous', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
-    /*static browseTypes = {
-        featured: ,
-        new: ,
-        categories: ,
-        charts:
-    };*/
 
     constructor(tokenData, userData) {
         this.tokenData = tokenData;
