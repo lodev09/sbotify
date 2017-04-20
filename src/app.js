@@ -399,7 +399,7 @@ bot.dialog('PlaylistControl', function(session, args) {
     var create = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::create');
     var show = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::show');
     var browse = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::browse');
-    var genre = builder.EntityRecognizer.findEntity(args.intent.entities, 'songgenre');
+    var playlistquery = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlistquery');
 
     var clear = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::clear');
     var add = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::add');
@@ -410,14 +410,14 @@ bot.dialog('PlaylistControl', function(session, args) {
     if (show) {
         if (/top|featured/.test(session.message.text)) {
             session.send('you meant to **browse** playlist right? :)');
-            session.beginDialog('BrowsePlaylists');
+            session.beginDialog('BrowsePlaylists', { playlistquery: playlistquery && playlistquery.entity });
         } else {
             session.beginDialog('ShowPlaylistQueue');
         }
     } else if (clear) {
         session.beginDialog('ClearPlaylist');
     } else if (browse) {
-        session.beginDialog('BrowsePlaylists');
+        session.beginDialog('BrowsePlaylists', { playlistquery: playlistquery && playlistquery.entity });
     } else if (add || songtitle) {
         if (songtitle) {
             var trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
@@ -451,22 +451,27 @@ const browseTypes = {
 bot.dialog('BrowsePlaylists', [
     function(session, args, next) {
         if (args) {
-            if (args.genre) {
+            if (args.playlistquery) {
                 next({
                     response: {
-                        entity: 'Genres & Moods'
+                        entity: 'Search',
+                        searchQuery: args.playlistquery
                     }
                 });
+
+                return;
             } else if (args.selectedType) {
                 next({
                     response: {
                         entity: args.selectedType
                     }
-                })
+                });
+
+                return;
             }
-        } else {
-            builder.Prompts.choice(session, 'pick one...', browseTypes, { listStyle: builder.ListStyle['auto'] });
         }
+
+        builder.Prompts.choice(session, 'pick one...', browseTypes, { listStyle: builder.ListStyle['auto'] });
     },
     async function (session, results, next) {
         if (results.response) {
@@ -496,7 +501,12 @@ bot.dialog('BrowsePlaylists', [
                 }
 
             } else if (type === 'search') {
-                builder.Prompts.text(session, 'so what are you looking for?');
+                if (results.response.searchQuery) {
+                    session.send('searching for **%s**', results.response.searchQuery)
+                    next({ response: results.response.searchQuery })
+                } else {
+                    builder.Prompts.text(session, 'so what are you looking for?');
+                }
             } else {
                 next();
             }

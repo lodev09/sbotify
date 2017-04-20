@@ -321,7 +321,7 @@ class Spotify {
             switch (type) {
                 case 'search':
                     if (options && options.query) {
-                        data = await this.search(options.query, {
+                        data = await this.search('"' + options.query + '"', {
                             type: 'playlist',
                             limit: 20
                         });

@@ -63,13 +63,7 @@
       ]
     },
     {
-      "name": "playlist_type",
-      "children": [
-        "featured",
-        "genre",
-        "chart",
-        "new"
-      ]
+      "name": "playlistquery"
     },
     {
       "name": "position",
@@ -83,9 +77,6 @@
     },
     {
       "name": "songcurrent"
-    },
-    {
-      "name": "songgenre"
     },
     {
       "name": "songtitle"
@@ -132,15 +123,15 @@
       "activated": true
     },
     {
-      "name": "Genres",
-      "mode": true,
-      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic / Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
-      "activated": true
-    },
-    {
       "name": "Playlist",
       "mode": true,
       "words": "playlist,queue,list",
+      "activated": true
+    },
+    {
+      "name": "Playlist Query",
+      "mode": true,
+      "words": "top lists,pop,opm,chill,mood,romance,travel,decades,party,focus,sleep,rnb,hip hop,electronic / dance,rock,indie,k - pop,karaoke,workout,dinner,trending,metal,soul,jazz,love songs,top songs,top hits,pop rock,heavy metal,slow rock",
       "activated": true
     },
     {
@@ -158,13 +149,13 @@
     {
       "name": "Switch Off",
       "mode": true,
-      "words": "off,0,false",
+      "words": "off,false",
       "activated": true
     },
     {
       "name": "Switch On",
       "mode": true,
-      "words": "on,1,true",
+      "words": "on,true",
       "activated": true
     }
   ],
@@ -192,6 +183,11 @@
     {
       "name": "Quoted Name",
       "pattern": "\\\".+\\\"",
+      "activated": true
+    },
+    {
+      "name": "Track Number",
+      "pattern": "#?\\d",
       "activated": true
     }
   ],
@@ -1344,6 +1340,185 @@
       ]
     },
     {
+      "text": "play track 1",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "track 1",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "please play track 1",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "play track #1",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play track 1",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "play track #2",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play track #3",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play track 40",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play track #20",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "play 10",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play #10",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "play #5",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play #5",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play 5",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
       "text": "next",
       "intent": "PlayerControl",
       "entities": [
@@ -1985,6 +2160,44 @@
       ]
     },
     {
+      "text": "volume set to 40%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "@sbotify volume set to 30",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "volume set to 20",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
       "text": "what is that song?",
       "intent": "SongQuery",
       "entities": []
@@ -2354,7 +2567,7 @@
           "endPos": 5
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 7,
           "endPos": 14
         }
@@ -2381,7 +2594,7 @@
           "endPos": 5
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 7,
           "endPos": 9
         }
@@ -2417,11 +2630,6 @@
           "entity": "playlist_command::browse",
           "startPos": 0,
           "endPos": 5
-        },
-        {
-          "entity": "playlist_type::featured",
-          "startPos": 11,
-          "endPos": 18
         }
       ]
     },
@@ -2649,7 +2857,7 @@
           "endPos": 14
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 16,
           "endPos": 18
         },
@@ -2670,7 +2878,7 @@
           "endPos": 14
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 16,
           "endPos": 18
         },
@@ -2707,7 +2915,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 7,
           "endPos": 11
         }
@@ -2765,7 +2973,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 15
         }
@@ -2781,7 +2989,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 14
         }
@@ -2797,7 +3005,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 13
         }
@@ -2813,7 +3021,7 @@
           "endPos": 3
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 5,
           "endPos": 8
         }
@@ -2829,7 +3037,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 7,
           "endPos": 13
         }
@@ -2845,7 +3053,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 20
         }
@@ -2861,7 +3069,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 7,
           "endPos": 16
         }
@@ -2872,7 +3080,7 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 20,
           "endPos": 24
         },
@@ -2893,7 +3101,7 @@
           "endPos": 5
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 17
         }
@@ -2909,7 +3117,7 @@
           "endPos": 14
         },
         {
-          "entity": "songgenre",
+          "entity": "playlistquery",
           "startPos": 16,
           "endPos": 18
         },
@@ -2930,9 +3138,9 @@
           "endPos": 14
         },
         {
-          "entity": "playlist_type::new",
+          "entity": "playlistquery",
           "startPos": 20,
-          "endPos": 22
+          "endPos": 28
         },
         {
           "entity": "appname",
@@ -2951,7 +3159,7 @@
           "endPos": 5
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 11,
           "endPos": 13
         }
@@ -2967,14 +3175,99 @@
           "endPos": 14
         },
         {
-          "entity": "playlist_type::featured",
+          "entity": "playlistquery",
           "startPos": 20,
-          "endPos": 22
+          "endPos": 28
         },
         {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "browse \"happy mood\" songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 8,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "@sbotify browse \"heavy metal\" songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 17,
+          "endPos": 27
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "browse featured songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "browse top hits",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "search for \"what is that song\" songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 12,
+          "endPos": 28
         }
       ]
     }
