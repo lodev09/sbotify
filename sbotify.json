@@ -3270,6 +3270,171 @@
           "endPos": 28
         }
       ]
+    },
+    {
+      "text": "@sbotify show top lists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 14,
+          "endPos": 22
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "browse for top list",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "show top tracks",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "show featured list",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "show featured tracks",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "show featured songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 5,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "search top tracks",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "search rock songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "search top list",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "search top playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlistquery",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
     }
   ]
 }
