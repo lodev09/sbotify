@@ -40,34 +40,34 @@
     {
       "name": "player_command",
       "children": [
+        "previous",
         "volume",
         "seek",
         "next",
         "play",
         "shuffle",
         "repeat",
-        "pause",
-        "previous"
+        "pause"
       ]
     },
     {
       "name": "playlist_command",
       "children": [
-        "show",
-        "browse",
-        "add",
         "create",
+        "show",
         "clear",
         "move",
+        "browse",
+        "add",
         "delete"
       ]
     },
     {
       "name": "playlist_type",
       "children": [
+        "featured",
         "genre",
         "chart",
-        "featured",
         "new"
       ]
     },
@@ -103,8 +103,7 @@
   "bing_entities": [
     "datetime",
     "number",
-    "ordinal",
-    "percentage"
+    "ordinal"
   ],
   "actions": [],
   "model_features": [
@@ -135,7 +134,7 @@
     {
       "name": "Genres",
       "mode": true,
-      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic \/ Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
+      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic / Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
       "activated": true
     },
     {
@@ -202,9 +201,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 16
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -212,9 +211,9 @@
           "endPos": 30
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
         }
       ]
     },
@@ -223,9 +222,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 14
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -233,9 +232,9 @@
           "endPos": 32
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 14
         }
       ]
     },
@@ -244,9 +243,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 15,
-          "endPos": 23
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -254,9 +253,9 @@
           "endPos": 11
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 15,
+          "endPos": 23
         }
       ]
     },
@@ -265,14 +264,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 26
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 26
         }
       ]
     },
@@ -281,14 +280,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 35
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 35
         }
       ]
     },
@@ -297,9 +296,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 35
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -307,9 +306,9 @@
           "endPos": 54
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 35
         }
       ]
     },
@@ -318,9 +317,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 20
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
         },
         {
           "entity": "songartist",
@@ -328,9 +327,9 @@
           "endPos": 31
         },
         {
-          "entity": "player_command::play",
-          "startPos": 7,
-          "endPos": 10
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
         }
       ]
     },
@@ -339,14 +338,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 12
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 12
         }
       ]
     },
@@ -355,9 +354,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -365,9 +364,9 @@
           "endPos": 24
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
         }
       ]
     },
@@ -376,14 +375,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 16
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
         }
       ]
     },
@@ -392,9 +391,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -402,9 +401,9 @@
           "endPos": 31
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
         }
       ]
     },
@@ -413,9 +412,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 24
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
         },
         {
           "entity": "songartist",
@@ -423,9 +422,9 @@
           "endPos": 38
         },
         {
-          "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 24
         }
       ]
     },
@@ -434,14 +433,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 21
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
         }
       ]
     },
@@ -450,14 +449,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 24
-        },
-        {
           "entity": "songartist",
           "startPos": 29,
           "endPos": 38
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 24
         }
       ]
     },
@@ -466,14 +465,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 20
-        },
-        {
           "entity": "songartist",
           "startPos": 25,
           "endPos": 35
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 20
         }
       ]
     },
@@ -482,14 +481,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 23
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
         }
       ]
     },
@@ -498,9 +497,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 23
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
         },
         {
           "entity": "songartist",
@@ -508,9 +507,9 @@
           "endPos": 37
         },
         {
-          "entity": "player_command::play",
-          "startPos": 7,
-          "endPos": 10
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
         }
       ]
     },
@@ -519,14 +518,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
-        },
-        {
           "entity": "songartist",
           "startPos": 18,
           "endPos": 24
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
         }
       ]
     },
@@ -535,14 +534,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 11
-        },
-        {
           "entity": "songartist",
           "startPos": 16,
           "endPos": 24
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 11
         }
       ]
     },
@@ -584,14 +583,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 21
-        },
-        {
           "entity": "songartist",
           "startPos": 26,
           "endPos": 32
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 21
         }
       ]
     },
@@ -600,9 +599,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 17,
-          "endPos": 23
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -610,9 +609,9 @@
           "endPos": 13
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 17,
+          "endPos": 23
         }
       ]
     },
@@ -621,14 +620,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 9
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 9
         }
       ]
     },
@@ -637,14 +636,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 19
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 19
         }
       ]
     },
@@ -653,9 +652,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 24
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -663,9 +662,9 @@
           "endPos": 45
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 24
         }
       ]
     },
@@ -674,14 +673,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 16
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
         }
       ]
     },
@@ -690,14 +689,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 31
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 31
         }
       ]
     },
@@ -706,14 +705,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 24
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 24
         }
       ]
     },
@@ -722,9 +721,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 23
+          "entity": "player_command::play",
+          "startPos": 7,
+          "endPos": 10
         },
         {
           "entity": "songartist",
@@ -732,9 +731,25 @@
           "endPos": 35
         },
         {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "play brainstorm",
+      "intent": "PlayMusic",
+      "entities": [
+        {
           "entity": "player_command::play",
-          "startPos": 7,
-          "endPos": 10
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 14
         }
       ]
     },
@@ -750,34 +765,18 @@
       ]
     },
     {
-      "text": "play brainstorm",
-      "intent": "PlayMusic",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 14
-        },
-        {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
       "text": "play pause",
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 9
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 9
         }
       ]
     },
@@ -786,9 +785,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -796,9 +795,25 @@
           "endPos": 24
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "hmmm, journey - open arms",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songartist",
+          "startPos": 6,
+          "endPos": 12
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 24
         }
       ]
     },
@@ -814,34 +829,18 @@
       ]
     },
     {
-      "text": "hmmm, journey - open arms",
-      "intent": "PlayMusic",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 16,
-          "endPos": 24
-        },
-        {
-          "entity": "songartist",
-          "startPos": 6,
-          "endPos": 12
-        }
-      ]
-    },
-    {
       "text": "please play into deep",
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 20
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
         }
       ]
     },
@@ -850,14 +849,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
         }
       ]
     },
@@ -866,14 +865,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 23
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 23
         }
       ]
     },
@@ -882,14 +881,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 60
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 9
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 60
         }
       ]
     },
@@ -898,14 +897,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 16,
-          "endPos": 24
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 12
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 24
         }
       ]
     },
@@ -914,14 +913,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 6
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 6
         }
       ]
     },
@@ -930,14 +929,35 @@
       "intent": "PlayMusic",
       "entities": [
         {
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
           "entity": "songtitle",
           "startPos": 5,
           "endPos": 13
-        },
+        }
+      ]
+    },
+    {
+      "text": "play please forgive me by bryan adams",
+      "intent": "PlayMusic",
+      "entities": [
         {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songartist",
+          "startPos": 26,
+          "endPos": 36
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
         }
       ]
     },
@@ -953,39 +973,18 @@
       ]
     },
     {
-      "text": "play please forgive me by bryan adams",
-      "intent": "PlayMusic",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 21
-        },
-        {
-          "entity": "songartist",
-          "startPos": 26,
-          "endPos": 36
-        },
-        {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
       "text": "please forgive me by bryan adams",
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 0,
-          "endPos": 16
-        },
-        {
           "entity": "songartist",
           "startPos": 21,
           "endPos": 31
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 16
         }
       ]
     },
@@ -994,14 +993,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 12,
-          "endPos": 20
-        },
-        {
           "entity": "player_command::play",
           "startPos": 7,
           "endPos": 10
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 12,
+          "endPos": 20
         }
       ]
     },
@@ -1010,9 +1009,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 16
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
         },
         {
           "entity": "songartist",
@@ -1020,9 +1019,9 @@
           "endPos": 30
         },
         {
-          "entity": "player_command::play",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 16
         }
       ]
     },
@@ -1031,14 +1030,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 25
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 25
         }
       ]
     },
@@ -1047,14 +1046,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 7,
-          "endPos": 15
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 7,
+          "endPos": 15
         }
       ]
     },
@@ -1063,14 +1062,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 30
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 9
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 30
         }
       ]
     },
@@ -1079,14 +1078,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 10,
-          "endPos": 18
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 6
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 10,
+          "endPos": 18
         }
       ]
     },
@@ -1095,14 +1094,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 0,
-          "endPos": 8
-        },
-        {
           "entity": "songartist",
           "startPos": 13,
           "endPos": 25
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 8
         }
       ]
     },
@@ -1111,14 +1110,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 0,
-          "endPos": 8
-        },
-        {
           "entity": "songartist",
           "startPos": 13,
           "endPos": 17
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 0,
+          "endPos": 8
         }
       ]
     },
@@ -1127,14 +1126,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 16,
-          "endPos": 36
-        },
-        {
           "entity": "songartist",
           "startPos": 0,
           "endPos": 12
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 16,
+          "endPos": 36
         }
       ]
     },
@@ -1143,14 +1142,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 19
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 19
         }
       ]
     },
@@ -1159,14 +1158,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 13
-        },
-        {
           "entity": "player_command::play",
           "startPos": 0,
           "endPos": 3
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 13
         }
       ]
     },
@@ -1175,14 +1174,14 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 22,
-          "endPos": 30
-        },
-        {
           "entity": "songartist",
           "startPos": 9,
           "endPos": 18
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 22,
+          "endPos": 30
         },
         {
           "entity": "appname",
@@ -1196,9 +1195,9 @@
       "intent": "PlayMusic",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 14,
-          "endPos": 22
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
         },
         {
           "entity": "songartist",
@@ -1206,40 +1205,14 @@
           "endPos": 36
         },
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
-          "entity": "player_command::play",
-          "startPos": 9,
-          "endPos": 12
-        }
-      ]
-    },
-    {
-      "text": "@sbotify play statcy's mom by fountains of wayne",
-      "intent": "PlayMusic",
-      "entities": [
-        {
           "entity": "songtitle",
           "startPos": 14,
-          "endPos": 25
-        },
-        {
-          "entity": "songartist",
-          "startPos": 30,
-          "endPos": 47
+          "endPos": 22
         },
         {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
-        },
-        {
-          "entity": "player_command::play",
-          "startPos": 9,
-          "endPos": 12
         }
       ]
     },
@@ -1247,6 +1220,11 @@
       "text": "@sbotify play \"behind these hazel eyes\"",
       "intent": "PlayMusic",
       "entities": [
+        {
+          "entity": "player_command::play",
+          "startPos": 9,
+          "endPos": 12
+        },
         {
           "entity": "songtitle",
           "startPos": 14,
@@ -1256,11 +1234,32 @@
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
-        },
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play statcy's mom by fountains of wayne",
+      "intent": "PlayMusic",
+      "entities": [
         {
           "entity": "player_command::play",
           "startPos": 9,
           "endPos": 12
+        },
+        {
+          "entity": "songartist",
+          "startPos": 30,
+          "endPos": 47
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 14,
+          "endPos": 25
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -1297,6 +1296,22 @@
       ]
     },
     {
+      "text": "secondhand serenade - awake",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 18
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 22,
+          "endPos": 26
+        }
+      ]
+    },
+    {
       "text": "@sbotify \"go for it\"",
       "intent": "PlayMusic",
       "entities": [
@@ -1325,22 +1340,6 @@
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
-        }
-      ]
-    },
-    {
-      "text": "secondhand serenade - awake",
-      "intent": "PlayMusic",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 22,
-          "endPos": 26
-        },
-        {
-          "entity": "songartist",
-          "startPos": 0,
-          "endPos": 18
         }
       ]
     },
@@ -1690,14 +1689,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "player_command::shuffle",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
           "entity": "switch::off",
           "startPos": 8,
           "endPos": 10
+        },
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
         }
       ]
     },
@@ -1706,14 +1705,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "player_command::shuffle",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
           "entity": "switch::on",
           "startPos": 8,
           "endPos": 9
+        },
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
         }
       ]
     },
@@ -1722,14 +1721,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "player_command::shuffle",
-          "startPos": 0,
-          "endPos": 10
-        },
-        {
           "entity": "switch::on",
           "startPos": 12,
           "endPos": 13
+        },
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 10
         }
       ]
     },
@@ -1760,21 +1759,10 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "player_command::play",
           "startPos": 9,
           "endPos": 12
-        }
-      ]
-    },
-    {
-      "text": "@sbotify",
-      "intent": "PlayerControl",
-      "entities": [
+        },
         {
           "entity": "appname",
           "startPos": 0,
@@ -1787,14 +1775,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "player_command::pause",
           "startPos": 9,
           "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -1803,14 +1791,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "player_command::play",
           "startPos": 9,
           "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -1818,6 +1806,11 @@
       "text": "@sbotify volume 30",
       "intent": "PlayerControl",
       "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 9,
+          "endPos": 14
+        },
         {
           "entity": "appname",
           "startPos": 0,
@@ -1830,6 +1823,11 @@
       "intent": "PlayerControl",
       "entities": [
         {
+          "entity": "player_command::volume",
+          "startPos": 13,
+          "endPos": 18
+        },
+        {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
@@ -1840,6 +1838,11 @@
       "text": "@sbotify set volume 39%",
       "intent": "PlayerControl",
       "entities": [
+        {
+          "entity": "player_command::volume",
+          "startPos": 13,
+          "endPos": 18
+        },
         {
           "entity": "appname",
           "startPos": 0,
@@ -1852,6 +1855,11 @@
       "intent": "PlayerControl",
       "entities": [
         {
+          "entity": "player_command::seek",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
@@ -1862,6 +1870,11 @@
       "text": "@sbotify seek 90%",
       "intent": "PlayerControl",
       "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 9,
+          "endPos": 12
+        },
         {
           "entity": "appname",
           "startPos": 0,
@@ -1874,6 +1887,11 @@
       "intent": "PlayerControl",
       "entities": [
         {
+          "entity": "player_command::seek",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
@@ -1885,14 +1903,14 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "player_command::previous",
           "startPos": 9,
           "endPos": 16
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -1901,16 +1919,10 @@
       "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        }
-      ]
-    },
-    {
-      "text": "@sbotify next song please",
-      "intent": "PlayerControl",
-      "entities": [
+          "entity": "player_command::next",
+          "startPos": 9,
+          "endPos": 12
+        },
         {
           "entity": "appname",
           "startPos": 0,
@@ -1930,11 +1942,43 @@
       ]
     },
     {
+      "text": "@sbotify next song please",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 9,
+          "endPos": 17
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
       "text": "previous",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "player_command::previous",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify next song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
           "startPos": 0,
           "endPos": 7
         }
@@ -2024,6 +2068,11 @@
       ]
     },
     {
+      "text": "who sang that?",
+      "intent": "SongQuery",
+      "entities": []
+    },
+    {
       "text": "@sbotify what's playing?",
       "intent": "SongQuery",
       "entities": [
@@ -2033,11 +2082,6 @@
           "endPos": 7
         }
       ]
-    },
-    {
-      "text": "who sang that?",
-      "intent": "SongQuery",
-      "entities": []
     },
     {
       "text": "@sbotify who sang that?",
@@ -2214,14 +2258,14 @@
       "intent": "Greeting",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "greeting",
           "startPos": 9,
           "endPos": 11
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -2230,14 +2274,14 @@
       "intent": "Greeting",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "greeting",
           "startPos": 9,
           "endPos": 10
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -2246,14 +2290,14 @@
       "intent": "Greeting",
       "entities": [
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "greeting",
           "startPos": 9,
           "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -2273,14 +2317,14 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 6,
-          "endPos": 20
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 0,
           "endPos": 4
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 6,
+          "endPos": 20
         }
       ]
     },
@@ -2289,14 +2333,14 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 4,
-          "endPos": 18
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 0,
           "endPos": 2
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 18
         }
       ]
     },
@@ -2386,9 +2430,9 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 4,
-          "endPos": 12
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
         },
         {
           "entity": "songartist",
@@ -2396,9 +2440,9 @@
           "endPos": 23
         },
         {
-          "entity": "playlist_command::add",
-          "startPos": 0,
-          "endPos": 2
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 12
         }
       ]
     },
@@ -2407,9 +2451,9 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 4,
-          "endPos": 18
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
         },
         {
           "entity": "songartist",
@@ -2417,9 +2461,9 @@
           "endPos": 43
         },
         {
-          "entity": "playlist_command::add",
-          "startPos": 0,
-          "endPos": 2
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 18
         }
       ]
     },
@@ -2472,14 +2516,14 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 6,
-          "endPos": 17
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 0,
           "endPos": 4
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 6,
+          "endPos": 17
         }
       ]
     },
@@ -2488,14 +2532,14 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 21
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 0,
           "endPos": 2
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
         }
       ]
     },
@@ -2526,11 +2570,6 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 19,
-          "endPos": 30
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 0,
           "endPos": 4
@@ -2539,6 +2578,11 @@
           "entity": "playlist_command::add",
           "startPos": 6,
           "endPos": 15
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 19,
+          "endPos": 30
         }
       ]
     },
@@ -2547,14 +2591,14 @@
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 15,
-          "endPos": 32
-        },
-        {
           "entity": "playlist_command::add",
           "startPos": 9,
           "endPos": 13
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 15,
+          "endPos": 32
         },
         {
           "entity": "appname",
@@ -2605,14 +2649,14 @@
           "endPos": 14
         },
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "playlist_type::featured",
           "startPos": 16,
           "endPos": 18
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -2626,30 +2670,9 @@
           "endPos": 14
         },
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "playlist_type::featured",
           "startPos": 16,
           "endPos": 18
-        }
-      ]
-    },
-    {
-      "text": "@sbotify add \"this song title\" to queue",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 14,
-          "endPos": 28
-        },
-        {
-          "entity": "playlist_command::add",
-          "startPos": 9,
-          "endPos": 11
         },
         {
           "entity": "appname",
@@ -2675,27 +2698,6 @@
       ]
     },
     {
-      "text": "@sbotify add \"shape of you song\" to playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 14,
-          "endPos": 30
-        },
-        {
-          "entity": "playlist_command::add",
-          "startPos": 9,
-          "endPos": 11
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        }
-      ]
-    },
-    {
       "text": "browse party playlists",
       "intent": "PlaylistControl",
       "entities": [
@@ -2708,6 +2710,48 @@
           "entity": "songgenre",
           "startPos": 7,
           "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@sbotify add \"shape of you song\" to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::add",
+          "startPos": 9,
+          "endPos": 11
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 14,
+          "endPos": 30
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify add \"this song title\" to queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::add",
+          "startPos": 9,
+          "endPos": 11
+        },
+        {
+          "entity": "songtitle",
+          "startPos": 14,
+          "endPos": 28
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     },
@@ -2808,22 +2852,6 @@
       ]
     },
     {
-      "text": "@sbotify search for dance songs",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
-          "entity": "songgenre",
-          "startPos": 20,
-          "endPos": 24
-        }
-      ]
-    },
-    {
       "text": "browse love songs",
       "intent": "PlaylistControl",
       "entities": [
@@ -2840,23 +2868,18 @@
       ]
     },
     {
-      "text": "@sbotify browse r&b songs",
+      "text": "@sbotify search for dance songs",
       "intent": "PlaylistControl",
       "entities": [
         {
-          "entity": "playlist_command::browse",
-          "startPos": 9,
-          "endPos": 14
+          "entity": "songgenre",
+          "startPos": 20,
+          "endPos": 24
         },
         {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
-        },
-        {
-          "entity": "songgenre",
-          "startPos": 16,
-          "endPos": 18
         }
       ]
     },
@@ -2877,6 +2900,27 @@
       ]
     },
     {
+      "text": "@sbotify browse r&b songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 16,
+          "endPos": 18
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
       "text": "@sbotify search for new songs",
       "intent": "PlaylistControl",
       "entities": [
@@ -2886,35 +2930,14 @@
           "endPos": 14
         },
         {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 7
-        },
-        {
           "entity": "playlist_type::new",
           "startPos": 20,
           "endPos": 22
-        }
-      ]
-    },
-    {
-      "text": "@sbotify search for top songs",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::browse",
-          "startPos": 9,
-          "endPos": 14
         },
         {
           "entity": "appname",
           "startPos": 0,
           "endPos": 7
-        },
-        {
-          "entity": "playlist_type::featured",
-          "startPos": 20,
-          "endPos": 22
         }
       ]
     },
@@ -2931,6 +2954,27 @@
           "entity": "playlist_type::featured",
           "startPos": 11,
           "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "@sbotify search for top songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 20,
+          "endPos": 22
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         }
       ]
     }
