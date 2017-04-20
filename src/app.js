@@ -5,6 +5,7 @@ import http from 'http';
 import SocketIO from 'socket.io';
 import builder from 'botbuilder';
 import uuid from 'uuid';
+import emoji from 'node-emoji';
 
 import Spotify from './lib/spotify';
 
@@ -53,14 +54,14 @@ const createTrackCard = function(session, track) {
         .tap(builder.CardAction.openUrl(session, url));
 }
 
-const createPlaylistCard = function(session, playlist) {
+const createPlaylistCard = function(session, playlist, images = true) {
     var image = playlist.images[0];
     var url = playlist.external_urls.spotify;
 
     return new builder.HeroCard(session)
         .title(playlist.name)
         .subtitle(playlist.tracks.total + ' tracks')
-        .images([ builder.CardImage.create(session, image.url) ])
+        .images([ images && builder.CardImage.create(session, image.url) ])
         .tap(builder.CardAction.openUrl(session, url));
 }
 
@@ -94,7 +95,7 @@ const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
 const playTrack = async function(session, spotify, track) {
-    session.send('now playing...');
+    session.send(emoji.get('musical_note'));
 
     var playback = null;
 
@@ -102,7 +103,7 @@ const playTrack = async function(session, spotify, track) {
         try {
             playback = await spotify.play(track.uri, session.conversationData.spotifyDevice.id, session.conversationData.spotifyPlaylist.uri);
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
 
@@ -121,7 +122,7 @@ const playTrack = async function(session, spotify, track) {
 }
 
 const playPlaylist = async function(session, spotify, playlist) {
-    session.send('playing **%s**...', playlist.name);
+    session.send('playing **%s** %s' + emoji.get('musical_note'), playlist.name);
 
     var playback = null;
 
@@ -132,7 +133,7 @@ const playPlaylist = async function(session, spotify, playlist) {
                 session.conversationData.spotifyPlaylist = playlist;
             }
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
 
@@ -175,7 +176,7 @@ const queueTrack = async function(session, spotify, query, message = true) {
         }
 
     } catch (err) {
-        session.send('opps... bot make bobo ;(');
+        session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
         console.log(err);
     }
 }
@@ -211,7 +212,7 @@ const playTrackQuery = async function(session, spotify, query, message = true) {
 
                 if (playback) {
                     if (session.conversationData.spotifyPlaylist.id !== session.conversationData.spotifyBotPlaylist.id) {
-                        session.send('now playing on **bot\'s queue** (y)');
+                        session.send('now playing on **bot\'s queue** ' + emoji.get('musical_note'));
                         session.conversationData.spotifyPlaylist = session.conversationData.spotifyBotPlaylist;
                     }
                     if (message) {
@@ -234,7 +235,7 @@ const playTrackQuery = async function(session, spotify, query, message = true) {
             return;
         }
     } catch (err) {
-        session.send('opps... bot make bobo ;(');
+        session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
         console.log(err);
     }
 }
@@ -378,7 +379,7 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
     if (spotify) {
         try {
             var result = await spotify.playback(args, session.conversationData.spotifyDevice.id, (message) => {
-                session.send('%s (y)', message);
+                session.send('%s ' + emoji.random().emoji, message);
             });
 
             if (!result) {
@@ -387,7 +388,7 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
 
             session.endDialogWithResult({ response: result })
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
     }
@@ -562,7 +563,7 @@ bot.dialog('BrowsePlaylists', [
                         session.endDialogWithResult();
                     }
                 } catch (err) {
-                    session.send('opps... bot make bobo ;(');
+                    session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                     console.log(err);
                 }
             }
@@ -577,7 +578,7 @@ bot.dialog('BrowsePlaylists', [
                     try {
                         await playPlaylist(session, spotify, playlist);
                     } catch (err) {
-                        session.send('opps... bot make bobo ;(');
+                        session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                         console.log(err);
                     }
                 }
@@ -594,21 +595,32 @@ bot.dialog('ShowPlaylistQueue', [
 
         if (spotify) {
             try {
+                var currentTrack = await spotify.getCurrentTrack();
                 var data = await spotify.getPlaylistTracks(session.conversationData.spotifyPlaylist.owner.id, session.conversationData.spotifyPlaylist.id);
                 if (data && data.length > 0) {
                     var tracks = {};
                     data.forEach((track) => {
-                        tracks[track.artists[0].name + ' - ' + track.name] = track;
+                        var text = currentTrack && currentTrack.id === track.id ?
+                            '**' + track.artists[0].name + ' - ' + track.name + '** ' + emoji.get('musical_note') :
+                            track.artists[0].name + ' - ' + track.name;
+
+                        tracks[text] = track;
                     });
 
                     session.dialogData.tracks = tracks;
-                    builder.Prompts.choice(session, 'here are songs in queue. pick one or type "cancel" ;)', tracks, { listStyle: builder.ListStyle['auto'] });
+                    var card = createPlaylistCard(session, session.conversationData.spotifyPlaylist, false);
+                    var msg = new builder.Message(session)
+                        .textFormat(builder.TextFormat.markdown)
+                        .attachments([ card ]);
+
+                    session.send(msg);
+                    builder.Prompts.choice(session, 'pick one or type "cancel" ;)', tracks, { listStyle: builder.ListStyle['auto'] });
                 } else {
                     session.send('no tracks found in current playlist :(\n\nmaybe it\'s private. tsk.');
                     session.endDialogWithResult();
                 }
             } catch (err) {
-                session.send('opps... bot make bobo ;(');
+                session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                 console.log(err);
             }
         }
@@ -625,7 +637,7 @@ bot.dialog('ShowPlaylistQueue', [
                     await playTrack(session, spotify, track);
                     session.endDialogWithResult();
                 } catch (err) {
-                    session.send('opps... bot make bobo ;(');
+                    session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                     console.log(err);
                 }
             }
@@ -644,13 +656,13 @@ bot.dialog('ClearPlaylist', [
                 try {
                     var result = await spotify.clearPlaylist(session.conversationData.spotifyBotPlaylist.id);
                     if (result) {
-                        session.send('done (y)');
+                        session.send('done ' + emoji.random().emoji);
                     } else {
                         session.send('can\'t :(');
                     }
                     session.endDialogWithResult();
                 } catch (err) {
-                    session.send('opps... bot make bobo ;(');
+                    session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                     console.log(err);
                 }
             } else {
@@ -680,7 +692,7 @@ bot.dialog('SongQuery', async function(session, args) {
                 session.send('nothing. try to say "play shape of you" ;)');
             }
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
     }
@@ -760,7 +772,7 @@ bot.dialog('PlayMusic', async function(session, args) {
             }
 
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
     }
@@ -801,7 +813,7 @@ bot.dialog('AddMusic', [
                         session.endDialogWithResult();
                     }
                 } catch (err) {
-                    session.send('opps... bot make bobo ;(');
+                    session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                     console.log(err);
                 }
             }
@@ -818,7 +830,7 @@ bot.dialog('AddMusic', [
                         await queueTrack(session, spotify, results.response.entity);
                         session.send('(y)');
                     } catch (err) {
-                        session.send('opps... bot make bobo ;(');
+                        session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                         console.log(err);
                     }
 
@@ -866,7 +878,7 @@ bot.dialog('SpotifySetDevice', [
                     });
                 }
             } catch (err) {
-                session.send('opps... bot make bobo ;(');
+                session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                 console.log(err);
             }
         }
@@ -891,7 +903,7 @@ bot.dialog('SpotifySetDevice', [
                             await playTrackQuery(session, spotify, session.dialogData.playTrackQuery);
                         }
                     } catch (err) {
-                        session.send('opps... bot make bobo ;(');
+                        session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                         console.log(err);
                     }
                 }
@@ -943,7 +955,7 @@ bot.dialog('CreatePlaylist', [
                         });
                     }
                 } catch (err) {
-                    session.send('opps... bot make bobo ;(');
+                    session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
                     console.log(err);
                 }
             }
@@ -978,7 +990,7 @@ bot.dialog('SpotifyAuthorized', [
                 session.replaceDialog('AuthorizeSpotify');
             }
         } catch (err) {
-            session.send('opps... bot make bobo ;(');
+            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
         }
     },
