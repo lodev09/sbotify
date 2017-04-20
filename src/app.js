@@ -361,7 +361,7 @@ bot.dialog('ShowPlaylistQueue', async function(session, args, next) {
     if (spotify) {
         var data = await spotify.getPlaylistTracks(session.userData.spotifyPlaylist.id);
         if (data && data.length > 0) {
-            var tracks = data.map((track, i) => i + 1 + '. ' + track.artists[0].name + ' - ' + track.name);
+            var tracks = data.map((track, i) => track.artists[0].name + ' - ' + track.name);
 
             builder.Prompts.choice(session, 'here are songs in queue...', tracks, { listStyle: builder.ListStyle['button'] });
             session.endDialogWithResult();
