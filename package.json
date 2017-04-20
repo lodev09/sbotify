@@ -1,7 +1,7 @@
 {
-  "name": "bot-09",
+  "name": "sbotify",
   "version": "1.0.1",
-  "description": "Lodev09 personal bot",
+  "description": "Your personal spotify bot - supports conversation too",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node src/index.js",
