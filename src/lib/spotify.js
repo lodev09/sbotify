@@ -248,8 +248,8 @@ class Spotify {
                 ...queryOptions
             });
 
-            if (data && data.tracks.items.length > 0) {
-                return data.tracks.items;
+            if (data && data[queryOptions.type + 's'].items.length > 0) {
+                return data[queryOptions.type + 's'].items;
             } else return null;
 
         } catch (err) {
@@ -329,14 +329,10 @@ class Spotify {
             switch (type) {
                 case 'search':
                     if (options && options.query) {
-                        var searchedData = await this.search(options.query, {
+                        data = await this.search(options.query, {
                             type: 'playlist',
                             limit: 20
                         });
-
-                        if (searchedData) {
-                            data = searchedData.playlists.items;
-                        }
                     }
 
                     break;
