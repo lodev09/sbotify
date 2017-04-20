@@ -58,11 +58,16 @@ const createPlaylistCard = function(session, playlist, images = true) {
     var image = playlist.images[0];
     var url = playlist.external_urls.spotify;
 
-    return new builder.HeroCard(session)
+    var card = new builder.HeroCard(session)
         .title(playlist.name)
         .subtitle(playlist.tracks.total + ' tracks')
-        .images([ images && builder.CardImage.create(session, image.url) ])
         .tap(builder.CardAction.openUrl(session, url));
+
+    if (images) {
+        card.images([ builder.CardImage.create(session, image.url) ]);
+    }
+
+    return card;
 }
 
 app.post('/api/messages', connector.listen());
