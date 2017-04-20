@@ -383,15 +383,20 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
 
     if (spotify) {
         try {
-            var result = await spotify.playback(args, session.conversationData.spotifyDevice.id, (message) => {
-                session.send('%s ' + emoji.random().emoji, message);
-            });
+            if (session.conversationData.spotifyDevice) {
+                var result = await spotify.playback(args, session.conversationData.spotifyDevice.id, (message) => {
+                    session.send('%s ' + emoji.random().emoji, message);
+                });
 
-            if (!result) {
-                session.send('cannot connect to device. try to type "devices" to select one :)');
+                if (!result) {
+                    session.send('cannot connect to device. try to type "devices" to select one :)');
+                }
+
+                session.endDialogWithResult({ response: result })
+            } else {
+                session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+                session.endDialogWithResult();
             }
-
-            session.endDialogWithResult({ response: result })
         } catch (err) {
             session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
