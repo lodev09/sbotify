@@ -229,13 +229,14 @@ class Spotify {
         }
     }
 
-    async search(query, type = 'track', limit = 10) {
+    async search(query, options) {
+        var queryOptions = Object.assign({ type: 'track', limit: 10, market: 'from_token' }, options);
+
         try {
             console.log('searching for "' + query + '"');
             const data = await this.get('/search', {
                 q: query,
-                type,
-                limit
+                ...queryOptions
             });
 
             if (data && data.tracks.items.length > 0) {
@@ -303,7 +304,9 @@ class Spotify {
 
     async browsePlaylists() {
         try {
-            var data = await this.get('/browse/featured-playlists');
+            var data = await this.get('/browse/featured-playlists', {
+                country: this.userData.country
+            });
             return data && data.playlists.items;
         } catch (err) {
             console.log(err);
@@ -333,7 +336,10 @@ class Spotify {
 
     async getPlaylistTracks(playlistId) {
         try {
-            var data = await this.get('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks');
+            var data = await this.get('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks', {
+                market: this.userData.country
+            });
+
             return data && data.items.map(item => item.track);
         } catch (err) {
             console.log(err);
@@ -380,6 +386,7 @@ class Spotify {
 
     async playback(args, deviceId = null, callback) {
         try {
+            var result = false;
             if (args && args.command) {
                 var track = await this.getCurrentTrack();
                 var playback = await this.getCurrentPlayback();
@@ -390,13 +397,23 @@ class Spotify {
                     switch (args.command) {
                         case 'play':
                         case 'pause':
-                            callback(args.command);
-                            return await this.put('/me/player/' + args.command + deviceIdParam);
+                            result = await this.put('/me/player/' + args.command + deviceIdParam);
+                            if (result) {
+                                callback('okay');
+                            }
+
                             break;
                         case 'previous':
                         case 'next':
-                            callback(args.command);
-                            return await this.post('/me/player/' + args.command + deviceIdParam);
+                            result = await this.post('/me/player/' + args.command + deviceIdParam);
+                            if (result) {
+                                await this.put('/me/player/play');
+                                setTimeout(async () => {
+                                    var track = await this.getCurrentTrack();
+                                    callback('now playing **' + track.artists[0].name + ' - ' + track.name + '**');
+                                }, 3000)
+                            }
+
                             break;
                         case 'seek':
                             var duration = null;
@@ -410,25 +427,34 @@ class Spotify {
                             }
 
                             if (duration) {
-                                callback((duration / 1000) + ' seconds');
-                                return await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + Math.min(duration, trackDuration));
+                                result = await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + Math.min(duration, trackDuration));
+                                if (result) {
+                                    callback('seeked to ' + (( duration / 1000 / 60 )) + ' mins');
+                                }
                             }
 
                             break;
                         case 'repeat':
                             if (playback) {
+                                var state = 'off';
                                 var states = ['off', 'track', 'context'];
-                                var currentState = playback.repeat_state;
 
-                                var stateIndex = states.indexOf(currentState);
-                                if (stateIndex + 1 > states.length) {
-                                    stateIndex = 0;
+                                if (args.switchOff) {
+                                    state = 'off';
+                                } else {
+                                    var currentState = playback.repeat_state;
+                                    var stateIndex = states.indexOf(currentState);
+                                    if (stateIndex + 1 > states.length) {
+                                        stateIndex = 0;
+                                    }
+
+                                    state = states[stateIndex + 1];
                                 }
 
-                                var state = states[stateIndex + 1];
-
-                                callback(state);
-                                return await this.put('/me/player/repeat?state=' + state);
+                                result = await this.put('/me/player/repeat?state=' + state);
+                                if (result) {
+                                    callback('repeat is now **'+state+'**');
+                                }
                             }
 
                             break;
@@ -445,8 +471,10 @@ class Spotify {
                                     state = !currentShuffleState ? 'true' : 'false';
                                 }
 
-                                callback(state === 'true' ? 'on' : 'off');
-                                return await this.put('/me/player/shuffle?state=' + state);
+                                result = await this.put('/me/player/shuffle?state=' + state);
+                                if (result) {
+                                    callback(state === 'true' ? 'on' : 'off');
+                                }
                             }
 
                             break;
@@ -458,15 +486,17 @@ class Spotify {
                                 percent = Math.min(parseFloat(args.number.trim()), 100);
                             }
 
-                            callback(percent + '%');
-                            return await this.put('/me/player/volume?volume_percent=' + percent);
+                            result = await this.put('/me/player/volume?volume_percent=' + percent);
+                            if (result) {
+                                callback('volume set to **' + percent + '%**');
+                            }
 
                             break;
                     }
                 }
             }
 
-            return false;
+            return result;
         } catch (err) {
             console.log(err);
         }
