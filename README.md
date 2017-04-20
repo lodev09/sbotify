@@ -1,7 +1,7 @@
 <h1 align="center">
-  <img src="./icon.png" width="250px" /><br>
-  Sbotify Music Player Bot<br>
-
+  <img src="./icon.png" width="200px" /><br>
+  Sbotify Music Player Bot
+  <br><br>
   <img src="https://github.com/lodev09/sbotify/blob/master/demo.gif?raw=true" width="500px">
 </h1>
 
