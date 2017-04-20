@@ -21,7 +21,8 @@ server.listen(port, function () {
 // Create chat bot
 const connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    gzipData: true
 });
 
 const bot = new builder.UniversalBot(connector, function (session) {
@@ -92,28 +93,60 @@ bot.set('persistConversationData', true);
 const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
+const playTrack = async function(session, spotify, track) {
+    session.send('now playing...');
+
+    var playback = null;
+
+    if (session.conversationData.spotifyDevice) {
+        try {
+            playback = await spotify.play(track.uri, session.conversationData.spotifyDevice.id, session.conversationData.spotifyPlaylist.uri);
+        } catch (err) {
+            session.send('opps... bot make bobo ;(');
+            console.log(err);
+        }
+
+        if (playback) {
+            var card = createTrackCard(session, track);
+            var msg = new builder.Message(session)
+                .textFormat(builder.TextFormat.markdown)
+                .attachments([ card ]);
+            session.send(msg);
+        } else {
+            session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one :)');
+        }
+    } else {
+        session.send('device not set. type "show devices" to get started.');
+    }
+}
+
 const playPlaylist = async function(session, spotify, playlist) {
-    session.send('playing playlist **%s**...', playlist.name);
+    session.send('playing **%s**...', playlist.name);
 
     var playback = null;
 
     if (session.conversationData.spotifyDevice) {
         try {
             playback = await spotify.play(null, session.conversationData.spotifyDevice.id, playlist.uri);
+            if (playback) {
+                session.conversationData.spotifyPlaylist = playlist;
+            }
         } catch (err) {
             session.send('opps... bot make bobo ;(');
             console.log(err);
         }
-    }
 
-    if (playback) {
-        var card = createPlaylistCard(session, playlist);
-        var msg = new builder.Message(session)
-            .textFormat(builder.TextFormat.markdown)
-            .attachments([ card ]);
-        session.send(msg);
+        if (playback) {
+            var card = createPlaylistCard(session, playlist);
+            var msg = new builder.Message(session)
+                .textFormat(builder.TextFormat.markdown)
+                .attachments([ card ]);
+            session.send(msg);
+        } else {
+            session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+        }
     } else {
-        session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+        session.send('device not set. type "show devices" to get started.');
     }
 }
 
@@ -127,9 +160,12 @@ const queueTrack = async function(session, spotify, query, message = true) {
         if (tracks) {
             var track = tracks[0];
 
-            var playback = await spotify.addTrackToPlaylist(track.uri, session.conversationData.spotifyPlaylist.id);
+            var playback = await spotify.addTrackToPlaylist(track.uri, session.conversationData.spotifyBotPlaylist.id);
             if (message) {
-                session.send('**%s** by **%s** added to queue (y)', track.name, track.artists[0].name);
+                session.send('**%s** by **%s** added to **bot queue** (y)', track.name, track.artists[0].name);
+                if (session.conversationData.spotifyBotPlaylist.id !== session.conversationData.spotifyPlaylist.id) {
+                    session.send('you\'re not under **bot queue**, type "browse" to select it ;)');
+                }
             }
 
             return tracks;
@@ -144,7 +180,7 @@ const queueTrack = async function(session, spotify, query, message = true) {
     }
 }
 
-const playTrack = async function(session, spotify, query, message = true) {
+const playTrackQuery = async function(session, spotify, query, message = true) {
     session.send('looking for **%s**...', query);
     session.sendTyping();
 
@@ -156,23 +192,28 @@ const playTrack = async function(session, spotify, query, message = true) {
 
             var playback = null;
             if (session.conversationData.spotifyDevice) {
-                await spotify.addTrackToPlaylist(track.uri, session.conversationData.spotifyPlaylist.id);
-                playback = await spotify.play(track.uri, session.conversationData.spotifyDevice.id, session.conversationData.spotifyPlaylist.uri);
-            }
+                await spotify.addTrackToPlaylist(track.uri, session.conversationData.spotifyBotPlaylist.id);
+                playback = await spotify.play(track.uri, session.conversationData.spotifyDevice.id, session.conversationData.spotifyBotPlaylist.uri);
 
-            if (playback) {
-                if (message) {
-                    var card = createTrackCard(session, track);
+                if (playback) {
+                    if (session.conversationData.spotifyPlaylist.id !== session.conversationData.spotifyBotPlaylist.id) {
+                        session.send('now playing on **bot\'s queue** (y)');
+                        session.conversationData.spotifyPlaylist = session.conversationData.spotifyBotPlaylist;
+                    }
+                    if (message) {
+                        var card = createTrackCard(session, track);
+                        var msg = new builder.Message(session)
+                            .textFormat(builder.TextFormat.markdown)
+                            .attachments([ card ]);
+                        session.send(msg);
+                    }
 
-                    var msg = new builder.Message(session)
-                        .textFormat(builder.TextFormat.markdown)
-                        .attachments([ card ]);
-                    session.send(msg);
+                    return tracks;
+                } else {
+                    session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
                 }
-
-                return tracks;
             } else {
-                session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+                session.send('device not set. type "show devices" to get started.');
             }
         } else {
             session.endDialog('no music found, sorry.');
@@ -229,12 +270,44 @@ bot.on('deleteUserData', function (message) {
     bot.beginDialog(message.address, 'DeleteUserData', { message: 'got it' });
 });
 
-bot.dialog('Greeting', function(session, args) {
-    var name = session.message.user ? session.message.user.name : null;
-    var greeting =  builder.EntityRecognizer.findEntity(args.intent.entities, 'greeting');
+bot.dialog('Greeting', [
+    function(session, args) {
+        var name = session.message.user ? session.message.user.name : null;
+        var greeting =  builder.EntityRecognizer.findEntity(args.intent.entities, 'greeting');
 
-    session.endDialog('%s, %s :)', greeting ? greeting.entity : 'hey', name.toLowerCase() || 'user');
-}).triggerAction({
+        var msg = new builder.Message(session)
+            .text([
+                'hi %s',
+                "what's up?",
+                'yes?',
+                'hello %s',
+                'what can I do for you %s?',
+                'you again %s?',
+                'what do you want today %s?',
+                'what is it that you want %s?',
+                'what do you want?',
+                'yoh',
+                'hey %s',
+                'hey'
+            ], name.toLowerCase() || 'user');
+
+        builder.Prompts.text(session, msg);
+    },
+    function(session, results) {
+        if (results.response) {
+            session.endDialog([
+                'kool',
+                'good',
+                '(y)',
+                'sure :)',
+                'yep',
+                'ok',
+                'k',
+                'got it'
+            ]);
+        }
+    }
+]).triggerAction({
     matches: 'Greeting'
 });
 
@@ -258,10 +331,8 @@ bot.dialog('Compliment', function(session, args) {
 bot.dialog('PlayerControl', function(session, args) {
     if (!args) return session.endDialog('use common playback words like "play", "pause", etc.');
 
-    var commands = ['next', 'previous', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
-
-    for (var i in commands) {
-        var command = commands[i];
+    for (var i in Spotify.playbackCommands) {
+        var command = Spotify.playbackCommands[i];
 
         var commandEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::' + command);
         if (commandEntity) {
@@ -301,7 +372,7 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
             });
 
             if (!result) {
-                session.send('opps. try another command :(');
+                session.send('cannot connect to device. try to type "devices" to select one :)');
             }
 
             session.endDialogWithResult({ response: result })
@@ -318,6 +389,8 @@ bot.dialog('PlaylistControl', function(session, args) {
     var create = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::create');
     var show = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::show');
     var browse = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::browse');
+    var genre = builder.EntityRecognizer.findEntity(args.intent.entities, 'songgenre');
+
     var clear = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::clear');
     var add = builder.EntityRecognizer.findEntity(args.intent.entities, 'playlist_command::add');
 
@@ -343,8 +416,8 @@ bot.dialog('PlaylistControl', function(session, args) {
             });
         }
     } else {
-        if (session.message.text.includes('playlist')) {
-            session.send('you meant to show playlist right? :)');
+        if (/playlist|queue/.test(session.message.text)) {
+            session.send('you meant to show queue right? :)');
             session.beginDialog('ShowPlaylistQueue');
         } else {
             session.endDialog('not sure what you mean there.');
@@ -358,40 +431,120 @@ bot.dialog('PlaylistControl', function(session, args) {
 });
 
 const browseTypes = {
-    'Featured' : '',
-    'New Releases' : '',
-    'Genres & Moods' : '',
-    'Charts' : ''
+    'My Playlists' : 'user-playlists',
+    'Featured' : 'featured-playlists',
+    'Genres & Moods' : 'categories',
+    'Charts' : 'charts',
+    'Search' : 'search'
 };
 
 bot.dialog('BrowsePlaylists', [
-    /*async function(session, args, next) {
-        var browse = {
-
+    function(session, args, next) {
+        if (args) {
+            if (args.genre) {
+                next({
+                    response: {
+                        entity: 'Genres & Moods'
+                    }
+                });
+            } else if (args.selectedType) {
+                next({
+                    response: {
+                        entity: args.selectedType
+                    }
+                })
+            }
+        } else {
+            builder.Prompts.choice(session, 'pick one...', browseTypes, { listStyle: builder.ListStyle['auto'] });
         }
-    },*/
-    async function(session, results, next) {
-        var spotify = getSpotify(session, {
-            resumeDialog: 'BrowsePlaylists'
-        });
+    },
+    async function (session, results, next) {
+        if (results.response) {
+            session.dialogData.selectedType = results.response.entity;
+            var type = browseTypes[results.response.entity];
 
-        if (spotify) {
-            try {
-                var data = await spotify.browsePlaylists();
+            if (type === 'categories') {
+                var spotify = getSpotify(session, {
+                    resumeDialog: 'BrowsePlaylists',
+                    dialogArgs: {
+                        selectedType: results.response.entity
+                    }
+                });
 
-                if (data && data.length > 0) {
-                    var playlists = {};
+                if (spotify) {
+                    var categoriesData = await spotify.getBrowseCategories();
+                    if (categoriesData) {
+                        var categories = {};
 
-                    data.forEach((playlist) => {
-                        playlists[playlist.name] = playlist;
-                    });
+                        categoriesData.forEach((category) => {
+                            categories[category.name] = category.id;
+                        });
 
-                    session.dialogData.playlists = playlists;
-                    builder.Prompts.choice(session, 'here are fetured playlists :)', playlists, { listStyle: builder.ListStyle['button'] });
+                        session.dialogData.categories = categories;
+                        builder.Prompts.choice(session, 'select your genre/mood...', categories, { listStyle: builder.ListStyle['auto'] });
+                    }
                 }
-            } catch (err) {
-                session.send('opps... bot make bobo ;(');
-                console.log(err);
+
+            } else if (type === 'search') {
+                builder.Prompts.text(session, 'so what are you looking for?');
+            } else {
+                next();
+            }
+        }
+    },
+    async function(session, results, next) {
+        if (session.dialogData.selectedType) {
+            var spotify = getSpotify(session, {
+                resumeDialog: 'BrowsePlaylists',
+                dialogArgs: {
+                    selectedType: session.dialogData.selectedType
+                }
+            });
+
+            if (spotify) {
+                var type = browseTypes[session.dialogData.selectedType];
+                try {
+                    var options = {};
+                    if (type === 'categories') {
+                        if (results.response.entity) {
+                            options.categoryId = session.dialogData.categories[results.response.entity];
+                            options.shouldSearch = false; // should search for playlists
+                        } else {
+                            session.send('you must choose your mood :(');
+                            return session.endDialogWithResult({
+                                resumed: builder.ResumeReason.notCompleted
+                            });
+                        }
+                    } else if (type === 'search') {
+                        if (results.response) {
+                            options.query = results.response;
+                        } else {
+                            session.send('you must be looking for something. try again later :)');
+                            return session.endDialogWithResult({
+                                resumed: builder.ResumeReason.notCompleted
+                            });
+                        }
+                    }
+
+                    var data = await spotify.browsePlaylists(type, options);
+
+                    if (data && data.length > 0) {
+                        var playlists = {};
+
+                        data.forEach((playlist) => {
+                            playlists[playlist.name] = playlist;
+                        });
+
+                        session.dialogData.playlists = playlists;
+                        builder.Prompts.choice(session, 'here\'s what we have.', playlists, { listStyle: builder.ListStyle['auto'] });
+                    } else {
+                        session.send('nothing :(');
+                        session.endDialogWithResult();
+                    }
+                } catch (err) {
+                    session.send('opps... bot make bobo ;(');
+                    console.log(err);
+                }
             }
         }
     },
@@ -411,43 +564,70 @@ bot.dialog('BrowsePlaylists', [
             }
         }
     }
-]).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
+]).cancelAction('cancelBrowsePlaylists', 'k', { matches: 'CancelAction' });
 
-bot.dialog('ShowPlaylistQueue', async function(session, args, next) {
-    var spotify = getSpotify(session, {
-        resumeDialog: 'ShowPlaylistQueue'
-    });
+bot.dialog('ShowPlaylistQueue', [
+    async function(session, args, next) {
+        var spotify = getSpotify(session, {
+            resumeDialog: 'ShowPlaylistQueue'
+        });
 
-    if (spotify) {
-        try {
-            var data = await spotify.getPlaylistTracks(session.conversationData.spotifyPlaylist.id);
-            if (data && data.length > 0) {
-                var tracks = data.map((track, i) => track.artists[0].name + ' - ' + track.name);
+        if (spotify) {
+            try {
+                var data = await spotify.getPlaylistTracks(session.conversationData.spotifyPlaylist.owner.id, session.conversationData.spotifyPlaylist.id);
+                if (data && data.length > 0) {
+                    var tracks = {};
+                    data.forEach((track) => {
+                        tracks[track.artists[0].name + ' - ' + track.name] = track;
+                    });
 
-                builder.Prompts.choice(session, 'here are songs in queue...', tracks, { listStyle: builder.ListStyle['button'] });
-                session.endDialogWithResult();
-            } else {
-                session.send('no tracks found :(\n\ntype something like "queue ed sheeran - shape of you" to add it to the playlist queue.');
-                session.endDialogWithResult();
+                    session.dialogData.tracks = tracks;
+                    builder.Prompts.choice(session, 'here are songs in queue. pick one or type "cancel" ;)', tracks, { listStyle: builder.ListStyle['auto'] });
+                } else {
+                    session.send('no tracks found in current playlist :(\n\nmaybe it\'s private. tsk.');
+                    session.endDialogWithResult();
+                }
+            } catch (err) {
+                session.send('opps... bot make bobo ;(');
+                console.log(err);
             }
-        } catch (err) {
-            session.send('opps... bot make bobo ;(');
-            console.log(err);
+        }
+    },
+    async function(session, results, next) {
+        if (results.response && results.response.entity) {
+            var spotify = getSpotify(session, {
+                resumeDialog: 'ShowPlaylistQueue'
+            });
+
+            if (spotify) {
+                try {
+                    var track = session.dialogData.tracks[results.response.entity];
+                    await playTrack(session, spotify, track);
+                    session.endDialogWithResult();
+                } catch (err) {
+                    session.send('opps... bot make bobo ;(');
+                    console.log(err);
+                }
+            }
         }
     }
-});
+]).cancelAction('cancelShowPlaylistQueue', 'k', { matches: 'CancelAction' });
 
 bot.dialog('ClearPlaylist', [
     function(session, args) {
-        builder.Prompts.confirm(session, 'are you sure you want to clear queue?');
+        builder.Prompts.confirm(session, 'are you sure you want to clear our **bot queue**?');
     },
     async function(session, results) {
         var spotify = getSpotify(session, { resumeDialog: 'ClearPlaylist' });
         if (spotify) {
             if (results.response) {
                 try {
-                    var result = await spotify.clearPlaylist(session.conversationData.spotifyPlaylist.id);
-                    session.send('done (y)');
+                    var result = await spotify.clearPlaylist(session.conversationData.spotifyBotPlaylist.id);
+                    if (result) {
+                        session.send('done (y)');
+                    } else {
+                        session.send('can\'t :(');
+                    }
                     session.endDialogWithResult();
                 } catch (err) {
                     session.send('opps... bot make bobo ;(');
@@ -477,7 +657,7 @@ bot.dialog('SongQuery', async function(session, args) {
                     .attachments([ card ]);
                 session.send(msg);
             } else {
-                session.send('nothing is playing');
+                session.send('nothing. try to say "play shape of you" ;)');
             }
         } catch (err) {
             session.send('opps... bot make bobo ;(');
@@ -493,8 +673,8 @@ bot.dialog('PlayMusic', async function(session, args) {
 
     var trackQuery = null;
 
-    if (args.playTrack) {
-        trackQuery = args.playTrack;
+    if (args.playTrackQuery) {
+        trackQuery = args.playTrackQuery;
     } else {
         var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
         var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
@@ -507,12 +687,12 @@ bot.dialog('PlayMusic', async function(session, args) {
     if (trackQuery) {
         var spotify = getSpotify(session, {
             resumeDialog: 'PlayMusic',
-            dialogArgs: { playTrack: trackQuery }
+            dialogArgs: { playTrackQuery: trackQuery }
         });
 
         if (spotify) {
             try {
-                const tracks = await playTrack(session, spotify, trackQuery);
+                const tracks = await playTrackQuery(session, spotify, trackQuery);
                 if (tracks && tracks.length > 1) {
                     var artists = [];
 
@@ -573,7 +753,7 @@ bot.dialog('AddMusic', [
                             }
                         });
 
-                        builder.Prompts.choice(session, 'you might want to check some of these...', artists, { listStyle: builder.ListStyle['button'] });
+                        builder.Prompts.choice(session, 'you might want to check some of these...', artists, { listStyle: builder.ListStyle['auto'] });
                     } else {
                         session.endDialogWithResult();
                     }
@@ -612,7 +792,7 @@ bot.dialog('SpotifySetDevice', [
     async function(session, args, next) {
         var spotify = getSpotify(session, {
             resumeDialog: 'SpotifySetDevice',
-            dialogArgs: { playTrack: args && args.playTrack }
+            dialogArgs: { playTrackQuery: args && args.playTrackQuery }
         });
 
         if (spotify) {
@@ -627,10 +807,10 @@ bot.dialog('SpotifySetDevice', [
                     });
 
                     session.dialogData.devices = devices;
-                    session.dialogData.playTrack = args && args.playTrack;
+                    session.dialogData.playTrackQuery = args && args.playTrackQuery;
 
                     if (devicesData.length > 1) {
-                        builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['button'] });
+                        builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['auto'] });
                     } else {
                         var defaultDevice = devicesData[0].type + ' - ' + devicesData[0].name;
                         session.send('playing on device **%s**', defaultDevice);
@@ -649,6 +829,7 @@ bot.dialog('SpotifySetDevice', [
         }
     },
     async function(session, results) {
+        console.log(results);
         if (results.response) {
             if (results.response.entity) {
                 var device = session.dialogData.devices[results.response.entity];
@@ -657,14 +838,14 @@ bot.dialog('SpotifySetDevice', [
 
                 var spotify = getSpotify(session, {
                     resumeDialog: 'SpotifySetDevice',
-                    dialogArgs: { playTrack: session.dialogData.playTrack }
+                    dialogArgs: { playTrackQuery: session.dialogData.playTrackQuery }
                 });
 
                 if (spotify) {
                     try {
                         await spotify.setDevice(device.id);
-                        if (session.dialogData.playTrack) {
-                            await playTrack(session, spotify, session.dialogData.playTrack);
+                        if (session.dialogData.playTrackQuery) {
+                            await playTrackQuery(session, spotify, session.dialogData.playTrackQuery);
                         }
                     } catch (err) {
                         session.send('opps... bot make bobo ;(');
@@ -674,13 +855,14 @@ bot.dialog('SpotifySetDevice', [
 
                 session.endDialogWithResult();
             } else {
-                session.endDialog('no problem - going to use active device then ;)');
+                session.send('no problem - going to use active device then ;)');
+                session.endDialogWithResult();
             }
         }
     }
 ]).triggerAction({
-    matches: /(show devices|list devices)|(devices)/i
-});
+    matches: /(show devices|list devices|devices|setup device)/i
+}).cancelAction('cancelSpotifySetDevice', 'k', { matches: 'CancelAction' });;
 
 bot.dialog('CreatePlaylist', [
     function(session, args, next) {
@@ -703,7 +885,7 @@ bot.dialog('CreatePlaylist', [
                     var playlist = await spotify.createPlaylist(results.response);
                     if (playlist) {
                         session.send('playlist **%s** created (y)', results.response);
-                        session.conversationData.spotifyPlaylist = playlist;
+                        session.conversationData.spotifyBotPlaylist = playlist;
                         session.endDialogWithResult({
                             response: { playlist }
                         });
@@ -732,7 +914,7 @@ bot.dialog('SpotifyAuthorized', [
             if (data && tokenData) {
                 session.send('thanks! just a moment...');
 
-                session.dialogData.args = args;
+                session.conversationData.args = args;
                 session.conversationData.spotifyUser = data.userData;
                 session.conversationData.spotifyToken = tokenData;
 
@@ -740,6 +922,7 @@ bot.dialog('SpotifyAuthorized', [
                     session.beginDialog('CreatePlaylist', { name: process.env.SPOTIFY_QUEUE_PLAYLIST_NAME });
                 } else {
                     session.conversationData.spotifyPlaylist = data.playlist;
+                    session.conversationData.spotifyBotPlaylist = data.playlist;
                     next();
                 }
 
@@ -756,13 +939,12 @@ bot.dialog('SpotifyAuthorized', [
         session.beginDialog('SpotifySetDevice');
     },
     async function(session, results) {
-        if (results.response) {
-            var args = session.dialogData.args;
-            if (args && args.dialog) {
-                session.beginDialog(args.dialog, args && args.dialogArgs);
-            } else {
-                session.endDialog('all set!');
-            }
+        var args = session.conversationData.args;
+        if (args && args.dialog) {
+            session.send('all set! now where were we...');
+            session.beginDialog(args.dialog, args && args.dialogArgs);
+        } else {
+            session.endDialog('all set!');
         }
     }
 ]);

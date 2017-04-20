@@ -6,6 +6,14 @@ import request from 'request';
 
 class Spotify {
 
+    static playbackCommands = ['next', 'previous', 'volume', 'shuffle', 'repeat', 'play', 'pause', 'seek'];
+    /*static browseTypes = {
+        featured: ,
+        new: ,
+        categories: ,
+        charts:
+    };*/
+
     constructor(tokenData, userData) {
         this.tokenData = tokenData;
         this.userData = userData;
@@ -87,7 +95,7 @@ class Spotify {
         })
     }
 
-    post(endPoint, body) {
+    post(endPoint, data) {
         return new Promise(async (resolve, reject) => {
             try {
                 var token = await this.getAccessToken();
@@ -97,40 +105,13 @@ class Spotify {
                     json: true
                 };
 
-                if (body) options.body = body;
+                if (data) options.body = data;
 
-                console.log('POST: ' + endPoint, body);
+                console.log('POST: ' + endPoint);
 
                 request.post(options, function(error, response, body) {
                     if (!error && Spotify.requestOk(response)) {
                         resolve(body || true);
-                    } else {
-                        reject(response.statusCode);
-                    }
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
-    }
-
-    put(endPoint, body) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                var token = await this.getAccessToken();
-                var options = {
-                    url: 'https://api.spotify.com/v1' + endPoint,
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    json: true
-                };
-
-                if (body) options.body = body;
-
-                console.log('PUT: ' + endPoint, body);
-
-                request.put(options, function(error, response, body) {
-                    if (!error && Spotify.requestOk(response)) {
-                        resolve(body || true || true);
                     } else {
                         console.log(body);
                         reject(response.statusCode);
@@ -142,7 +123,7 @@ class Spotify {
         });
     }
 
-    delete(endPoint, body) {
+    put(endPoint, data) {
         return new Promise(async (resolve, reject) => {
             try {
                 var token = await this.getAccessToken();
@@ -152,14 +133,43 @@ class Spotify {
                     json: true
                 };
 
-                if (body) options.body = body;
+                if (data) options.body = data;
 
-                console.log('DELETE: ' + endPoint, body);
+                console.log('PUT: ' + endPoint);
+
+                request.put(options, function(error, response, body) {
+                    if (!error && Spotify.requestOk(response)) {
+                        resolve(body || true);
+                    } else {
+                        console.log(body);
+                        reject(response.statusCode);
+                    }
+                });
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    delete(endPoint, data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var token = await this.getAccessToken();
+                var options = {
+                    url: 'https://api.spotify.com/v1' + endPoint,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    json: true
+                };
+
+                if (data) options.body = data;
+
+                console.log('DELETE: ' + endPoint);
 
                 request.delete(options, function(error, response, body) {
                     if (!error && Spotify.requestOk(response)) {
-                        resolve(body || true || true);
+                        resolve(body || true);
                     } else {
+                        console.log(body);
                         reject(response.statusCode);
                     }
                 });
@@ -181,9 +191,7 @@ class Spotify {
                     json: true
                 };
 
-                if (data) {
-                    options.qs = data;
-                }
+                if (data) options.qs = data;
 
                 console.log('GET: ' + endPoint);
 
@@ -191,6 +199,7 @@ class Spotify {
                     if (!error && Spotify.requestOk(response)) {
                         resolve(body || true);
                     } else {
+                        console.log(body);
                         reject(response.statusCode);
                     }
                 });
@@ -274,11 +283,10 @@ class Spotify {
         }
     }
 
-    async setDevice(deviceId, play = true) {
+    async setDevice(deviceId) {
         try {
             return await this.put('/me/player', {
-                device_ids: [ deviceId ],
-                play
+                device_ids: [ deviceId ]
             });
         } catch (err) {
             console.log(err);
@@ -302,12 +310,83 @@ class Spotify {
         }
     }
 
-    async browsePlaylists() {
+    async getBrowseCategories() {
         try {
-            var data = await this.get('/browse/featured-playlists', {
+            var data = await this.get('/browse/categories', {
                 country: this.userData.country
             });
-            return data && data.playlists.items;
+
+            return data && data.categories.items;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async browsePlaylists(type = 'featured-playlists', options) {
+        try {
+            var data = null;
+
+            switch (type) {
+                case 'search':
+                    if (options && options.query) {
+                        var searchedData = await this.search(options.query, {
+                            type: 'playlist',
+                            limit: 20
+                        });
+
+                        if (searchedData) {
+                            data = searchedData.playlists.items;
+                        }
+                    }
+
+                    break;
+                case 'user-playlists':
+                    data = await this.getPlaylists();
+                    break;
+                case 'featured-playlists':
+                    var featuredPlaylists = await this.get('/browse/' + type, {
+                        country: this.userData.country
+                    });
+
+                    if (featuredPlaylists) {
+                        data = featuredPlaylists.playlists.items;
+                    }
+
+                    break;
+                case 'categories':
+                    if (options && options.categoryId) {
+                        var categoryPlaylists = await this.get('/browse/categories/' + options.categoryId + '/playlists', {
+                            country: this.userData.country
+                        });
+
+                        if (categoryPlaylists) {
+                            data = categoryPlaylists.playlists.items;
+                        }
+                    }
+
+                    break;
+                case 'charts':
+                    var chartPlaylists = ['37i9dQZEVXbMDoHDwVN2tF', '37i9dQZEVXbLiRSasKsNU9'];
+                    var playlists = [];
+
+                    for (var i in chartPlaylists) {
+                        var playlistId = chartPlaylists[i];
+                        var playlistData = await this.get('/users/spotifycharts/playlists/' + playlistId, {
+                            market: this.userData.country,
+                            fields: 'collaborative, description, external_urls, followers, href, id, images, name, tracks(!items), owner, public, snapshot_id, type, uri'
+                        });
+
+                        playlists.push(playlistData);
+                    }
+
+                    data = playlists;
+                    break;
+                case 'search':
+                    // search playlists here
+                    break;
+            }
+
+            return data;
         } catch (err) {
             console.log(err);
         }
@@ -334,10 +413,11 @@ class Spotify {
         }
     }
 
-    async getPlaylistTracks(playlistId) {
+    async getPlaylistTracks(ownerId, playlistId) {
         try {
-            var data = await this.get('/users/'+this.userData.id+'/playlists/'+playlistId+'/tracks', {
-                market: this.userData.country
+            var data = await this.get('/users/'+ownerId+'/playlists/'+playlistId+'/tracks', {
+                market: this.userData.country,
+                fields: 'items(track(id, artists, external_urls, uri, name, album(id, name, images)))'
             });
 
             return data && data.items.map(item => item.track);
@@ -348,7 +428,7 @@ class Spotify {
 
     async addTrackToPlaylist(uri, playlistId) {
         try {
-            var currentTracks = await this.getPlaylistTracks(playlistId);
+            var currentTracks = await this.getPlaylistTracks(this.userData.id, playlistId);
             for (var i in currentTracks) {
                 var track = currentTracks[i];
                 if (track.uri === uri) {
@@ -367,9 +447,8 @@ class Spotify {
 
     async clearPlaylist(playlistId) {
         try {
-            var tracksData = await this.getPlaylistTracks(playlistId);
+            var tracksData = await this.getPlaylistTracks(this.userData.id, playlistId);
             if (tracksData) {
-                console.log(tracksData);
                 var tracks = tracksData.map(track => {
                     return { uri: track.uri }
                 });
@@ -411,7 +490,7 @@ class Spotify {
                                 setTimeout(async () => {
                                     var track = await this.getCurrentTrack();
                                     callback('now playing **' + track.artists[0].name + ' - ' + track.name + '**');
-                                }, 3000)
+                                }, 2000)
                             }
 
                             break;
