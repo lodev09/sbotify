@@ -100,7 +100,7 @@ const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
 const playTrack = async function(session, spotify, track) {
-    session.send(emoji.get('musical_notes'));
+    session.send(emoji.get('musical_note'));
 
     var playback = null;
 
@@ -127,7 +127,7 @@ const playTrack = async function(session, spotify, track) {
 }
 
 const playPlaylist = async function(session, spotify, playlist) {
-    session.send('playing **%s** %s', playlist.name, emoji.get('musical_notes'));
+    session.send('playing **%s** %s', playlist.name, emoji.get('musical_note'));
 
     var playback = null;
 
@@ -217,7 +217,7 @@ const playTrackQuery = async function(session, spotify, query, message = true) {
 
                 if (playback) {
                     if (session.conversationData.spotifyPlaylist.id !== session.conversationData.spotifyBotPlaylist.id) {
-                        session.send('now playing on **bot\'s queue** ' + emoji.get('musical_notes'));
+                        session.send('now playing on **bot\'s queue** ' + emoji.get('musical_note'));
                         session.conversationData.spotifyPlaylist = session.conversationData.spotifyBotPlaylist;
                     }
                     if (message) {
@@ -606,7 +606,7 @@ bot.dialog('ShowPlaylistQueue', [
                     var tracks = {};
                     data.forEach((track) => {
                         var text = currentTrack && currentTrack.id === track.id ?
-                            '**' + track.artists[0].name + ' - ' + track.name + '** ' + emoji.get('musical_notes') :
+                            '**' + track.artists[0].name + ' - ' + track.name + '** ' + emoji.get('musical_note') :
                             track.artists[0].name + ' - ' + track.name;
 
                         tracks[text] = track;
@@ -1030,7 +1030,7 @@ bot.dialog('AuthorizeSpotify', [
             session.send('good. click below to authorize me...');
             var msg = new builder.Message(session)
                 .attachments([
-                    new builder.ThumbnailCard(session)
+                    new builder.HeroCard(session)
                         .title("accounts.spotify.com")
                         .subtitle("Authorize bot to play music, search and do some cool stuff.")
                         .tap(builder.CardAction.openUrl(session, 'https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri='+encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)+'&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read&state=' + encodeURIComponent(state)))
