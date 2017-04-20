@@ -859,7 +859,7 @@ bot.dialog('SpotifySetDevice', [
         }
     }
 ]).triggerAction({
-    matches: /(show devices|list devices|devices|setup device)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:show devices|list devices|devices|setup devices|setup device)/i
 }).cancelAction('cancelSpotifySetDevice', 'k', { matches: 'CancelAction' });;
 
 bot.dialog('CreatePlaylist', [
