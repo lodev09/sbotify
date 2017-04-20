@@ -180,6 +180,20 @@ const queueTrack = async function(session, spotify, query, message = true) {
     }
 }
 
+const playTrackNumber = async function(session, spotify, number) {
+    var data = await spotify.getPlaylistTracks(session.conversationData.spotifyPlaylist.owner.id, session.conversationData.spotifyPlaylist.id);
+    if (data && data.length > 0) {
+        var track = data[Math.max(1, number) - 1];
+        if (track) {
+            await playTrack(session, spotify, track);
+        } else {
+            session.send('track **#%s** not in queue. try to type "show queue" to get a list of tracks :)', number);
+        }
+    } else {
+        session.send('track number not found :(');
+    }
+}
+
 const playTrackQuery = async function(session, spotify, query, message = true) {
     session.send('looking for **%s**...', query);
     session.sendTyping();
@@ -668,26 +682,43 @@ bot.dialog('PlayMusic', async function(session, args) {
     if (!args) return session.endDialog();
 
     var trackQuery = null;
+    var trackNumber = null;
+    var playCommand = null;
 
     if (args.playTrackQuery) {
         trackQuery = args.playTrackQuery;
+    } else if (args.playTrackNumber) {
+        trackNumber = args.playTrackNumber;
+    } else if (args.playCommand) {
+        playCommand = args.playCommand;
     } else {
-        var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-        var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+        if (args.intent) {
+            var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+            var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+            var play = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::play');
+            var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
 
-        if (songtitle) {
-            trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+            if (songtitle) {
+                trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+            } else if (play) {
+                playCommand = true;
+                trackNumber = number.entity;
+            }
         }
     }
 
-    if (trackQuery) {
-        var spotify = getSpotify(session, {
-            resumeDialog: 'PlayMusic',
-            dialogArgs: { playTrackQuery: trackQuery }
-        });
+    var spotify = getSpotify(session, {
+        resumeDialog: 'PlayMusic',
+        dialogArgs: {
+            playTrackQuery: trackQuery,
+            playTrackNumber: trackNumber,
+            playCommand: playCommand
+        }
+    });
 
-        if (spotify) {
-            try {
+    if (spotify) {
+        try {
+            if (trackQuery) {
                 const tracks = await playTrackQuery(session, spotify, trackQuery);
                 if (tracks && tracks.length > 1) {
                     var artists = [];
@@ -703,21 +734,27 @@ bot.dialog('PlayMusic', async function(session, args) {
 
                     builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
                 }
-            } catch (err) {
-                session.send('opps... bot make bobo ;(');
-                console.log(err);
+
+                session.endDialog();
+            } else {
+
+                if (play) {
+                    if (trackNumber) {
+                        await playTrackNumber(session, spotify, parseInt(trackNumber));
+                    } else {
+                        session.beginDialog('ApplyPlayerCommand', { command: 'play' });
+                    }
+                } else {
+                    session.endDialog();
+                }
             }
 
-            session.endDialog();
-        }
-    } else {
-        var play = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::play');
-        if (play) {
-            session.beginDialog('ApplyPlayerCommand', { command: 'play' });
-        } else {
-            session.endDialog();
+        } catch (err) {
+            session.send('opps... bot make bobo ;(');
+            console.log(err);
         }
     }
+
 }).triggerAction({
     matches: 'PlayMusic'
 });

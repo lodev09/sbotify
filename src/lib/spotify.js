@@ -403,7 +403,7 @@ class Spotify {
 
     async getPlaylistTracks(ownerId, playlistId) {
         try {
-            var data = await this.get('/users/'+ownerId+'/playlists/'+playlistId+'/tracks', {
+            var data = await this.get('/users/' + ownerId + '/playlists/' + playlistId + '/tracks', {
                 market: this.userData.country,
                 fields: 'items(track(id, artists, external_urls, uri, name, album(id, name, images)))'
             });
@@ -494,7 +494,11 @@ class Spotify {
                             if (duration) {
                                 result = await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + Math.min(duration, trackDuration));
                                 if (result) {
-                                    callback('seeked to ' + (( duration / 1000 / 60 )) + ' mins');
+                                    var date = new Date(null);
+                                    date.setSeconds(duration / 1000);
+                                    var mins = date.toISOString().substr(14, 5);
+
+                                    callback('seeked to ' + mins + ' (y)');
                                 }
                             }
 
