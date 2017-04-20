@@ -32,39 +32,44 @@
   ],
   "entities": [
     {
+      "name": "appname"
+    },
+    {
       "name": "greeting"
     },
     {
       "name": "player_command",
       "children": [
         "volume",
+        "seek",
         "next",
         "play",
         "shuffle",
+        "repeat",
         "pause",
         "previous"
-      ]
-    },
-    {
-      "name": "player_other",
-      "children": [
-        "tracks",
-        "song",
-        "please"
       ]
     },
     {
       "name": "playlist_command",
       "children": [
         "show",
+        "browse",
         "add",
         "create",
-        "remove",
-        "move"
+        "clear",
+        "move",
+        "delete"
       ]
     },
     {
-      "name": "playlist_name"
+      "name": "playlist_type",
+      "children": [
+        "genre",
+        "chart",
+        "featured",
+        "new"
+      ]
     },
     {
       "name": "position",
@@ -80,18 +85,35 @@
       "name": "songcurrent"
     },
     {
+      "name": "songgenre"
+    },
+    {
       "name": "songtitle"
+    },
+    {
+      "name": "switch",
+      "children": [
+        "off",
+        "on"
+      ]
     }
   ],
   "composites": [],
   "closedLists": [],
   "bing_entities": [
+    "datetime",
     "number",
     "ordinal",
     "percentage"
   ],
   "actions": [],
   "model_features": [
+    {
+      "name": "Browsing",
+      "mode": true,
+      "words": "search,browse,find",
+      "activated": true
+    },
     {
       "name": "Cancel Action",
       "mode": true,
@@ -105,27 +127,45 @@
       "activated": true
     },
     {
-      "name": "Greeting",
+      "name": "Create",
       "mode": true,
-      "words": "hi,hello,what ' s up,hey,hi bot,hello bot",
+      "words": "create,make,add,append",
       "activated": true
     },
     {
-      "name": "Playback Commands",
+      "name": "Genres",
       "mode": true,
-      "words": "play,pause,resume,next,previous,volume,shuffle,repeat",
+      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic / Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
       "activated": true
     },
     {
-      "name": "Playlist Commands",
+      "name": "Playlist",
       "mode": true,
-      "words": "create playlist,remove song,add song,add to playlist,remove from playlist,delete song,add music,remove music,move,move song,move position,show playlist,list playlist",
+      "words": "playlist,queue,list",
       "activated": true
     },
     {
-      "name": "Playlist Position",
+      "name": "Remove",
       "mode": true,
-      "words": "move . * first | end | beginning | begin | last | ending",
+      "words": "delete,remove",
+      "activated": true
+    },
+    {
+      "name": "Show",
+      "mode": true,
+      "words": "show,view,display,reveal",
+      "activated": true
+    },
+    {
+      "name": "Switch Off",
+      "mode": true,
+      "words": "off,0,false",
+      "activated": true
+    },
+    {
+      "name": "Switch On",
+      "mode": true,
+      "words": "on,1,true",
       "activated": true
     }
   ],
@@ -136,18 +176,23 @@
       "activated": true
     },
     {
+      "name": "Bot Name",
+      "pattern": "^\\@[\\w-_]+",
+      "activated": true
+    },
+    {
+      "name": "Percent",
+      "pattern": "\\n+\\%",
+      "activated": true
+    },
+    {
       "name": "Play Title By Artist Track",
       "pattern": "^.+\\s+by\\s+.+$",
       "activated": true
     },
     {
-      "name": "Playback Controls",
-      "pattern": "^next|previous|set|volume|volume|shuffle|repeat.*",
-      "activated": true
-    },
-    {
-      "name": "Playlist Command",
-      "pattern": "^remove|add|move|create|show|list.*playlist|position.*",
+      "name": "Quoted Name",
+      "pattern": "\\\".+\\\"",
       "activated": true
     }
   ],
@@ -1126,6 +1171,180 @@
       ]
     },
     {
+      "text": "@bot-09 bruno mars - 24k magic",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 21,
+          "endPos": 29
+        },
+        {
+          "entity": "songartist",
+          "startPos": 8,
+          "endPos": 17
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play 24k magic by bruno mars",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 21
+        },
+        {
+          "entity": "songartist",
+          "startPos": 26,
+          "endPos": 35
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play statcy's mom by fountains of wayne",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 24
+        },
+        {
+          "entity": "songartist",
+          "startPos": 29,
+          "endPos": 46
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play \"behind these hazel eyes\"",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 37
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 \"outplayed\"",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 9,
+          "endPos": 17
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 \"the song title here\"",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 9,
+          "endPos": 27
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 \"go for it\"",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 9,
+          "endPos": 17
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 \"24k magic\"",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 9,
+          "endPos": 17
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "secondhand serenade - awake",
+      "intent": "PlayMusic",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 22,
+          "endPos": 26
+        },
+        {
+          "entity": "songartist",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
       "text": "next",
       "intent": "PlayerControl",
       "entities": [
@@ -1210,11 +1429,6 @@
           "entity": "player_command::next",
           "startPos": 0,
           "endPos": 3
-        },
-        {
-          "entity": "player_other",
-          "startPos": 9,
-          "endPos": 19
         }
       ]
     },
@@ -1226,11 +1440,6 @@
           "entity": "player_command::next",
           "startPos": 0,
           "endPos": 3
-        },
-        {
-          "entity": "player_other",
-          "startPos": 9,
-          "endPos": 12
         }
       ]
     },
@@ -1275,11 +1484,6 @@
           "entity": "player_command::shuffle",
           "startPos": 0,
           "endPos": 6
-        },
-        {
-          "entity": "player_other::tracks",
-          "startPos": 8,
-          "endPos": 13
         }
       ]
     },
@@ -1306,360 +1510,433 @@
       ]
     },
     {
-      "text": "add victims of love to playlist",
-      "intent": "PlaylistControl",
+      "text": "resume",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 4,
-          "endPos": 18
-        },
-        {
-          "entity": "playlist_command::add",
-          "startPos": 0,
-          "endPos": 2
-        }
-      ]
-    },
-    {
-      "text": "create playlist \"playlist name here\"",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::create",
+          "entity": "player_command::play",
           "startPos": 0,
           "endPos": 5
-        },
-        {
-          "entity": "playlist_name",
-          "startPos": 17,
-          "endPos": 34
         }
       ]
     },
     {
-      "text": "add open arms by journey to playlist",
-      "intent": "PlaylistControl",
+      "text": "resume playback",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 4,
-          "endPos": 12
-        },
-        {
-          "entity": "songartist",
-          "startPos": 17,
-          "endPos": 23
-        },
-        {
-          "entity": "playlist_command::add",
+          "entity": "player_command::play",
           "startPos": 0,
-          "endPos": 2
+          "endPos": 5
         }
       ]
     },
     {
-      "text": "add journey - open arms to playlist",
-      "intent": "PlaylistControl",
+      "text": "play current song",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 14,
-          "endPos": 22
+          "entity": "player_command::play",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "pause current song",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::next",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "toggle shuffle",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 7,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "toggle repeat",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::repeat",
+          "startPos": 7,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "pause playback",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::pause",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "pause please",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::pause",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "pause!",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::pause",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "seek 2 seconds",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 2:30",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 5 minutes",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 20%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 20 seconds",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 90%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "seek 80%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::seek",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "shuffle off",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
         },
         {
-          "entity": "songartist",
-          "startPos": 4,
+          "entity": "switch::off",
+          "startPos": 8,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "shuffle on",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "switch::on",
+          "startPos": 8,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "set shuffle on",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::shuffle",
+          "startPos": 0,
           "endPos": 10
         },
         {
-          "entity": "playlist_command::add",
-          "startPos": 0,
-          "endPos": 2
-        }
-      ]
-    },
-    {
-      "text": "create playlist: this is a playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::create",
-          "startPos": 0,
-          "endPos": 5
-        },
-        {
-          "entity": "playlist_name",
-          "startPos": 17,
-          "endPos": 23
-        }
-      ]
-    },
-    {
-      "text": "remove \"victims of love\" from playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 8,
-          "endPos": 22
-        },
-        {
-          "entity": "playlist_command::remove",
-          "startPos": 0,
-          "endPos": 5
-        }
-      ]
-    },
-    {
-      "text": "remove the song title from playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 7,
-          "endPos": 20
-        },
-        {
-          "entity": "playlist_command::remove",
-          "startPos": 0,
-          "endPos": 5
-        }
-      ]
-    },
-    {
-      "text": "move shape of you to 2nd position",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 16
-        },
-        {
-          "entity": "playlist_command::move",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
-      "text": "move this song to 5th position",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 5,
+          "entity": "switch::on",
+          "startPos": 12,
           "endPos": 13
-        },
+        }
+      ]
+    },
+    {
+      "text": "stop",
+      "intent": "PlayerControl",
+      "entities": [
         {
-          "entity": "playlist_command::move",
+          "entity": "player_command::pause",
           "startPos": 0,
           "endPos": 3
         }
       ]
     },
     {
-      "text": "move journey - open arms to 3rd position",
-      "intent": "PlaylistControl",
+      "text": "stop playback",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 15,
-          "endPos": 23
+          "entity": "player_command::pause",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 play now",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
         },
         {
-          "entity": "songartist",
-          "startPos": 5,
+          "entity": "player_command::play",
+          "startPos": 8,
           "endPos": 11
-        },
-        {
-          "entity": "playlist_command::move",
-          "startPos": 0,
-          "endPos": 3
         }
       ]
     },
     {
-      "text": "move this song title to last",
-      "intent": "PlaylistControl",
+      "text": "@bot-09",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "position::end",
-          "startPos": 24,
-          "endPos": 27
-        },
-        {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 19
-        },
-        {
-          "entity": "playlist_command::move",
+          "entity": "appname",
           "startPos": 0,
-          "endPos": 3
+          "endPos": 6
         }
       ]
     },
     {
-      "text": "move track 3 to the beginning",
-      "intent": "PlaylistControl",
+      "text": "@bot-09 pause",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "position::begin",
-          "startPos": 20,
-          "endPos": 28
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
         },
         {
-          "entity": "playlist_command::move",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "player_command::pause",
+          "startPos": 8,
+          "endPos": 12
         }
       ]
     },
     {
-      "text": "move track 5 to the end",
-      "intent": "PlaylistControl",
+      "text": "@bot-09 play",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "position::end",
-          "startPos": 20,
-          "endPos": 22
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
         },
         {
-          "entity": "playlist_command::move",
-          "startPos": 0,
-          "endPos": 3
+          "entity": "player_command::play",
+          "startPos": 8,
+          "endPos": 11
         }
       ]
     },
     {
-      "text": "move this song title to 1st",
-      "intent": "PlaylistControl",
+      "text": "@bot-09 volume 30",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 19
-        },
-        {
-          "entity": "playlist_command::move",
+          "entity": "appname",
           "startPos": 0,
-          "endPos": 3
+          "endPos": 6
         }
       ]
     },
     {
-      "text": "move victims of love to last",
-      "intent": "PlaylistControl",
+      "text": "@bot-09 set volume 90",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "position::end",
-          "startPos": 24,
-          "endPos": 27
-        },
-        {
-          "entity": "songtitle",
-          "startPos": 5,
-          "endPos": 19
-        },
-        {
-          "entity": "playlist_command::move",
+          "entity": "appname",
           "startPos": 0,
-          "endPos": 3
+          "endPos": 6
         }
       ]
     },
     {
-      "text": "playlist",
-      "intent": "PlaylistControl",
+      "text": "@bot-09 set volume 39%",
+      "intent": "PlayerControl",
       "entities": [
         {
-          "entity": "playlist_command::show",
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 seek 2:20",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 seek 90%",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 seek",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 previous",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "player_command::previous",
+          "startPos": 8,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 next",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 next song please",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "please pause playback!",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::pause",
+          "startPos": 7,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "previous",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "player_command::previous",
           "startPos": 0,
           "endPos": 7
-        }
-      ]
-    },
-    {
-      "text": "list playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::show",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
-      "text": "list my playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::show",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
-      "text": "show my playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::show",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
-      "text": "view my playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::show",
-          "startPos": 0,
-          "endPos": 3
-        }
-      ]
-    },
-    {
-      "text": "create a playlist for me",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::create",
-          "startPos": 0,
-          "endPos": 5
-        }
-      ]
-    },
-    {
-      "text": "okay create a playlist for me",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::create",
-          "startPos": 5,
-          "endPos": 10
-        }
-      ]
-    },
-    {
-      "text": "create playlist test playlist name",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::create",
-          "startPos": 0,
-          "endPos": 5
-        },
-        {
-          "entity": "playlist_name",
-          "startPos": 16,
-          "endPos": 33
         }
       ]
     },
@@ -1704,12 +1981,88 @@
       "entities": []
     },
     {
-      "text": "forget it",
-      "intent": "CancelAction",
+      "text": "@bot-09 show song info",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 8,
+          "endPos": 11
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 show me that song",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 8,
+          "endPos": 11
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 what is that song?",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 what's playing?",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "who sang that?",
+      "intent": "SongQuery",
       "entities": []
     },
     {
-      "text": "stop",
+      "text": "@bot-09 who sang that?",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 who is the singer?",
+      "intent": "SongQuery",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "forget it",
       "intent": "CancelAction",
       "entities": []
     },
@@ -1769,6 +2122,39 @@
       "entities": []
     },
     {
+      "text": "@bot-09 okay",
+      "intent": "ConfirmAction",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 yes please",
+      "intent": "ConfirmAction",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 yes",
+      "intent": "ConfirmAction",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
       "text": "hello bot",
       "intent": "Greeting",
       "entities": [
@@ -1820,6 +2206,731 @@
           "entity": "greeting",
           "startPos": 0,
           "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 hey",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "greeting",
+          "startPos": 8,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 hi",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "greeting",
+          "startPos": 8,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 hello",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "greeting",
+          "startPos": 8,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "show playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "queue victims of love",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 6,
+          "endPos": 20
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "add victims of love to queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 18
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "browse featured playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "browse playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "browse top playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "clear playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::clear",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "show playlist queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "browse top featured playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "add open arms by journey to queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 12
+        },
+        {
+          "entity": "songartist",
+          "startPos": 17,
+          "endPos": 23
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "add very long title by very long artist name to queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 4,
+          "endPos": 18
+        },
+        {
+          "entity": "songartist",
+          "startPos": 23,
+          "endPos": 43
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "show currently playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "remove currently playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::clear",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "remove all songs in queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::clear",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "clear all songs in queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::clear",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "queue shape of you",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 6,
+          "endPos": 17
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "add \"when i'm with you\" to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 5,
+          "endPos": 21
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "browse playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "browse",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "queue ed sheeran - shape of you",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 19,
+          "endPos": 30
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 0,
+          "endPos": 4
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 queue \"this song\" please",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 14,
+          "endPos": 31
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 8,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 show playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 8,
+          "endPos": 11
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 browse playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 browse top playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 15,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 browse top playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 15,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 add \"this song title\" to queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 27
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 8,
+          "endPos": 10
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 clear queue",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::clear",
+          "startPos": 8,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 add \"shape of you song\" to playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 13,
+          "endPos": 29
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 8,
+          "endPos": 10
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "browse party playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 7,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "search for party songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 11,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "search for rock playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 11,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "search for pop songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 11,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "show rock playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 3
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 5,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "browse hip hop playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 7,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "search for love songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 11,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 search for dance songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 19,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "browse love songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 7,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 browse r&b songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 15,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "search for romance playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "songgenre",
+          "startPos": 11,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 search for new songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "playlist_type::new",
+          "startPos": 19,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "@bot-09 search for top songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 8,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 6
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 19,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "search for top songs",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 0,
+          "endPos": 5
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 11,
+          "endPos": 13
         }
       ]
     }
