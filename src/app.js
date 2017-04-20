@@ -360,7 +360,7 @@ bot.dialog('PlayerControl', function(session, args) {
                 switchOn,
                 switchOff,
                 command
-            }, session.conversationData.spotifyDevice.id);
+            });
         }
     }
 
