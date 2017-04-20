@@ -12,7 +12,9 @@ A bot that plays music and playlists built using:
 - [LUIS](https://www.luis.ai)
 
 ## Channel
-Currently on skype. [Add him here](https://join.skype.com/bot/620a26bb-45c2-45bf-8e51-062d7c1b2747)
+Currently on:
+- [Skype](https://join.skype.com/bot/620a26bb-45c2-45bf-8e51-062d7c1b2747)
+- [Messenger](https://www.messenger.com/t/1282802558506132)
 
 ## Credits
 Feedback and PRs are welcome!
