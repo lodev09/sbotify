@@ -1,6 +1,4 @@
 // https://github.com/spotify/web-api/issues/321
-// auth request:
-// https://accounts.spotify.com/authorize?client_id=933adf0420af4eecb7d70cc8c7687d70&response_type=code&redirect_uri=https%3A%2F%2Fwww.lodev09.com%2Fspotify%2Fcallback&scope=user-read-playback-state+user-modify-playback-state+playlist-read-private+playlist-modify-public+user-library-read+user-read-private+user-read-email+user-follow-modify+playlist-read-collaborative+playlist-modify-private+user-library-modify+user-read-birthdate+user-follow-read+user-top-read
 
 import request from 'request';
 
