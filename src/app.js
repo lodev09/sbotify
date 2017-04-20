@@ -447,11 +447,11 @@ bot.dialog('PlaylistControl', function(session, args) {
 });
 
 const browseTypes = {
-    'My Playlists' : 'user-playlists',
-    'Featured' : 'featured-playlists',
-    'Genres & Moods' : 'categories',
-    'Charts' : 'charts',
-    'Search' : 'search'
+    '1. My Playlists' : 'user-playlists',
+    '2. Featured' : 'featured-playlists',
+    '3. Genres & Moods' : 'categories',
+    '4. Charts' : 'charts',
+    '5. Search' : 'search'
 };
 
 bot.dialog('BrowsePlaylists', [
@@ -460,7 +460,7 @@ bot.dialog('BrowsePlaylists', [
             if (args.playlistquery) {
                 next({
                     response: {
-                        entity: 'Search',
+                        entity: Object.keys(browseTypes)[4],
                         searchQuery: args.playlistquery
                     }
                 });
@@ -477,7 +477,7 @@ bot.dialog('BrowsePlaylists', [
             }
         }
 
-        builder.Prompts.choice(session, 'pick one...', browseTypes, { listStyle: builder.ListStyle['auto'] });
+        builder.Prompts.choice(session, 'pick one...', browseTypes, { listStyle: builder.ListStyle['button'] });
     },
     async function (session, results, next) {
         if (results.response) {
