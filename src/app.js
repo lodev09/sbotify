@@ -810,7 +810,7 @@ bot.dialog('SpotifySetDevice', [
                     session.dialogData.playTrackQuery = args && args.playTrackQuery;
 
                     if (devicesData.length > 1) {
-                        builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['auto'] });
+                        builder.Prompts.choice(session, "which of these devices you want me use?", devices, { listStyle: builder.ListStyle['button'] });
                     } else {
                         var defaultDevice = devicesData[0].type + ' - ' + devicesData[0].name;
                         session.send('playing on device **%s**', defaultDevice);
