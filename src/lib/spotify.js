@@ -494,11 +494,9 @@ class Spotify {
                             var duration = null;
                             if (args.time) {
                                 duration = args.time.split(':').reverse().reduce((prev, curr, i) => prev + curr * Math.pow(60, i), 0) * 1000;
-                            } else if (args.percentage) {
-                                percent = parseInt(args.percentage.replace('%', '').trim()) / 100;
-                                duration = trackDuration * percent;
                             } else if (args.number) {
-                                duration = parseFloat(args.number.trim()) * 60 * 1000;
+                                percent = parseInt(args.number.trim()) / 100;
+                                duration = trackDuration * percent;
                             }
 
                             if (duration) {
@@ -555,9 +553,7 @@ class Spotify {
                             break;
                         case 'volume':
                             var percent = 0;
-                            if (args.percentage) {
-                                percent = parseInt(args.percentage.replace('%', '').trim());
-                            } else if (args.number) {
+                            if (args.number) {
                                 percent = Math.min(parseFloat(args.number.trim()), 100);
                             }
 

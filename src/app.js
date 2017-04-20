@@ -335,13 +335,11 @@ bot.dialog('PlayerControl', function(session, args) {
         var commandEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::' + command);
         if (commandEntity) {
             var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
-            var percentage = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.percentage');
             var time = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.datetime.time');
             var switchOn = builder.EntityRecognizer.findEntity(args.intent.entities, 'switch::on');
             var switchOff = builder.EntityRecognizer.findEntity(args.intent.entities, 'switch::off');
 
             return session.beginDialog('ApplyPlayerCommand', {
-                percentage: percentage && percentage.entity,
                 number: number && number.entity,
                 time: time && time.entity,
                 switchOn,
