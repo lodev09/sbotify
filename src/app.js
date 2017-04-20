@@ -44,7 +44,7 @@ const createTrackCard = function(session, track) {
     var title = track.name;
     var album = track.album.name;
     var image = track.album.images[1];
-    var url = track.uri;
+    var url = track.external_urls.spotify;
 
     return new builder.HeroCard(session)
         .title(artist + ' - ' + title)
@@ -55,7 +55,7 @@ const createTrackCard = function(session, track) {
 
 const createPlaylistCard = function(session, playlist) {
     var image = playlist.images[0];
-    var url = playlist.uri;
+    var url = playlist.external_urls.spotify;
 
     return new builder.HeroCard(session)
         .title(playlist.name)
