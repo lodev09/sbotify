@@ -702,7 +702,7 @@ bot.dialog('PlayMusic', async function(session, args) {
                 trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
             } else if (play) {
                 playCommand = true;
-                trackNumber = number.entity;
+                trackNumber = number && number.entity;
             }
         }
     }
