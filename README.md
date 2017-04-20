@@ -1,9 +1,9 @@
 <h1 align="center">
-  <img src="./icon.png"/><br>
-  Sbotify Music Player Bot
-</h1>
+  <img src="./icon.png" width="250px" /><br>
+  Sbotify Music Player Bot<br>
 
-![demo](https://github.com/lodev09/sbotify/blob/master/demo.gif?raw=true)
+  <img src="https://github.com/lodev09/sbotify/blob/master/demo.gif?raw=true" width="500px">
+</h1>
 
 ## About
 A bot that plays music and playlists built using:
