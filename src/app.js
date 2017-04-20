@@ -886,6 +886,10 @@ bot.dialog('CreatePlaylist', [
                     if (playlist) {
                         session.send('playlist **%s** created (y)', results.response);
                         session.conversationData.spotifyBotPlaylist = playlist;
+                        if (!session.conversationData.spotifyPlaylist) {
+                            session.conversationData.spotifyPlaylist = playlist;
+                        }
+
                         session.endDialogWithResult({
                             response: { playlist }
                         });
