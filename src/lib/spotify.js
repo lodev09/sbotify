@@ -498,7 +498,7 @@ class Spotify {
                                     date.setSeconds(duration / 1000);
                                     var mins = date.toISOString().substr(14, 5);
 
-                                    callback('seeked to ' + mins + ' (y)');
+                                    callback('seeked to ' + mins);
                                 }
                             }
 
