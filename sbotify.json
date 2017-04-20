@@ -1,8 +1,8 @@
 {
   "luis_schema_version": "2.0.0",
   "versionId": "0.1",
-  "name": "bot-09",
-  "desc": "Lodev09 personal LUIS bot",
+  "name": "sbotify",
+  "desc": "Your personal spotify bot player",
   "culture": "en-us",
   "intents": [
     {
@@ -135,7 +135,7 @@
     {
       "name": "Genres",
       "mode": true,
-      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic / Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
+      "words": "Top Lists,Pop,OPM,Chill,Mood,Romance,Travel,Decades,Party,Focus,Sleep,RnB,Hip Hop,Electronic \/ Dance,Rock,Indie,K - pop,Karaoke,Workout,Dinner,Trending,Metal,Soul,Jazz,Love Songs",
       "activated": true
     },
     {
@@ -739,13 +739,13 @@
       ]
     },
     {
-      "text": "@bot-09 play hotline bling",
+      "text": "@sbotify play hotline bling",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 25
+          "startPos": 14,
+          "endPos": 26
         }
       ]
     },
@@ -803,13 +803,13 @@
       ]
     },
     {
-      "text": "@bot-09 play cross my mind",
+      "text": "@sbotify play cross my mind",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 25
+          "startPos": 14,
+          "endPos": 26
         }
       ]
     },
@@ -942,13 +942,13 @@
       ]
     },
     {
-      "text": "@bot-09 please play how am i suppose to love you",
+      "text": "@sbotify please play how am i suppose to love you",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 20,
-          "endPos": 47
+          "startPos": 21,
+          "endPos": 48
         }
       ]
     },
@@ -1171,160 +1171,160 @@
       ]
     },
     {
-      "text": "@bot-09 bruno mars - 24k magic",
+      "text": "@sbotify bruno mars - 24k magic",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 21,
-          "endPos": 29
+          "startPos": 22,
+          "endPos": 30
         },
         {
           "entity": "songartist",
-          "startPos": 8,
-          "endPos": 17
+          "startPos": 9,
+          "endPos": 18
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 play 24k magic by bruno mars",
+      "text": "@sbotify play 24k magic by bruno mars",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 21
+          "startPos": 14,
+          "endPos": 22
         },
         {
           "entity": "songartist",
-          "startPos": 26,
-          "endPos": 35
+          "startPos": 27,
+          "endPos": 36
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         }
       ]
     },
     {
-      "text": "@bot-09 play statcy's mom by fountains of wayne",
+      "text": "@sbotify play statcy's mom by fountains of wayne",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 24
+          "startPos": 14,
+          "endPos": 25
         },
         {
           "entity": "songartist",
-          "startPos": 29,
-          "endPos": 46
+          "startPos": 30,
+          "endPos": 47
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         }
       ]
     },
     {
-      "text": "@bot-09 play \"behind these hazel eyes\"",
+      "text": "@sbotify play \"behind these hazel eyes\"",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 37
+          "startPos": 14,
+          "endPos": 38
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         }
       ]
     },
     {
-      "text": "@bot-09 \"outplayed\"",
+      "text": "@sbotify \"outplayed\"",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 9,
-          "endPos": 17
+          "startPos": 10,
+          "endPos": 18
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 \"the song title here\"",
+      "text": "@sbotify \"the song title here\"",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 9,
-          "endPos": 27
+          "startPos": 10,
+          "endPos": 28
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 \"go for it\"",
+      "text": "@sbotify \"go for it\"",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 9,
-          "endPos": 17
+          "startPos": 10,
+          "endPos": 18
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 \"24k magic\"",
+      "text": "@sbotify \"24k magic\"",
       "intent": "PlayMusic",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 9,
-          "endPos": 17
+          "startPos": 10,
+          "endPos": 18
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -1756,165 +1756,165 @@
       ]
     },
     {
-      "text": "@bot-09 play now",
+      "text": "@sbotify play now",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
-        }
-      ]
-    },
-    {
-      "text": "@bot-09",
-      "intent": "PlayerControl",
-      "entities": [
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 pause",
-      "intent": "PlayerControl",
-      "entities": [
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
-          "entity": "player_command::pause",
-          "startPos": 8,
+          "startPos": 9,
           "endPos": 12
         }
       ]
     },
     {
-      "text": "@bot-09 play",
+      "text": "@sbotify",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify pause",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        },
+        {
+          "entity": "player_command::pause",
+          "startPos": 9,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "@sbotify play",
+      "intent": "PlayerControl",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
         },
         {
           "entity": "player_command::play",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         }
       ]
     },
     {
-      "text": "@bot-09 volume 30",
+      "text": "@sbotify volume 30",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 set volume 90",
+      "text": "@sbotify set volume 90",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 set volume 39%",
+      "text": "@sbotify set volume 39%",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 seek 2:20",
+      "text": "@sbotify seek 2:20",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 seek 90%",
+      "text": "@sbotify seek 90%",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 seek",
+      "text": "@sbotify seek",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 previous",
+      "text": "@sbotify previous",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "player_command::previous",
-          "startPos": 8,
-          "endPos": 15
+          "startPos": 9,
+          "endPos": 16
         }
       ]
     },
     {
-      "text": "@bot-09 next",
+      "text": "@sbotify next",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 next song please",
+      "text": "@sbotify next song please",
       "intent": "PlayerControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -1981,56 +1981,56 @@
       "entities": []
     },
     {
-      "text": "@bot-09 show song info",
+      "text": "@sbotify show song info",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "playlist_command::show",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 show me that song",
+      "text": "@sbotify show me that song",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "playlist_command::show",
-          "startPos": 8,
-          "endPos": 11
+          "startPos": 9,
+          "endPos": 12
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 what is that song?",
+      "text": "@sbotify what is that song?",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 what's playing?",
+      "text": "@sbotify what's playing?",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -2040,24 +2040,24 @@
       "entities": []
     },
     {
-      "text": "@bot-09 who sang that?",
+      "text": "@sbotify who sang that?",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 who is the singer?",
+      "text": "@sbotify who is the singer?",
       "intent": "SongQuery",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -2122,35 +2122,35 @@
       "entities": []
     },
     {
-      "text": "@bot-09 okay",
+      "text": "@sbotify okay",
       "intent": "ConfirmAction",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 yes please",
+      "text": "@sbotify yes please",
       "intent": "ConfirmAction",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 yes",
+      "text": "@sbotify yes",
       "intent": "ConfirmAction",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -2210,50 +2210,50 @@
       ]
     },
     {
-      "text": "@bot-09 hey",
+      "text": "@sbotify hey",
       "intent": "Greeting",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "greeting",
-          "startPos": 8,
+          "startPos": 9,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "@sbotify hi",
+      "intent": "Greeting",
+      "entities": [
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        },
+        {
+          "entity": "greeting",
+          "startPos": 9,
           "endPos": 10
         }
       ]
     },
     {
-      "text": "@bot-09 hi",
+      "text": "@sbotify hello",
       "intent": "Greeting",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "greeting",
-          "startPos": 8,
-          "endPos": 9
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 hello",
-      "intent": "Greeting",
-      "entities": [
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
-          "entity": "greeting",
-          "startPos": 8,
-          "endPos": 12
+          "startPos": 9,
+          "endPos": 13
         }
       ]
     },
@@ -2543,155 +2543,155 @@
       ]
     },
     {
-      "text": "@bot-09 queue \"this song\" please",
+      "text": "@sbotify queue \"this song\" please",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "songtitle",
+          "startPos": 15,
+          "endPos": 32
+        },
+        {
+          "entity": "playlist_command::add",
+          "startPos": 9,
+          "endPos": 13
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify show playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::show",
+          "startPos": 9,
+          "endPos": 12
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify browse playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "@sbotify browse top playlists",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 16,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "@sbotify browse top playlist",
+      "intent": "PlaylistControl",
+      "entities": [
+        {
+          "entity": "playlist_command::browse",
+          "startPos": 9,
+          "endPos": 14
+        },
+        {
+          "entity": "appname",
+          "startPos": 0,
+          "endPos": 7
+        },
+        {
+          "entity": "playlist_type::featured",
+          "startPos": 16,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "@sbotify add \"this song title\" to queue",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "songtitle",
           "startPos": 14,
-          "endPos": 31
+          "endPos": 28
         },
         {
           "entity": "playlist_command::add",
-          "startPos": 8,
-          "endPos": 12
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 show playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::show",
-          "startPos": 8,
+          "startPos": 9,
           "endPos": 11
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 browse playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 browse top playlists",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
-          "entity": "playlist_type::featured",
-          "startPos": 15,
-          "endPos": 17
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 browse top playlist",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
-          "entity": "playlist_type::featured",
-          "startPos": 15,
-          "endPos": 17
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 add \"this song title\" to queue",
-      "intent": "PlaylistControl",
-      "entities": [
-        {
-          "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 27
-        },
-        {
-          "entity": "playlist_command::add",
-          "startPos": 8,
-          "endPos": 10
-        },
-        {
-          "entity": "appname",
-          "startPos": 0,
-          "endPos": 6
-        }
-      ]
-    },
-    {
-      "text": "@bot-09 clear queue",
+      "text": "@sbotify clear queue",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "playlist_command::clear",
-          "startPos": 8,
-          "endPos": 12
+          "startPos": 9,
+          "endPos": 13
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
     {
-      "text": "@bot-09 add \"shape of you song\" to playlist",
+      "text": "@sbotify add \"shape of you song\" to playlist",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "songtitle",
-          "startPos": 13,
-          "endPos": 29
+          "startPos": 14,
+          "endPos": 30
         },
         {
           "entity": "playlist_command::add",
-          "startPos": 8,
-          "endPos": 10
+          "startPos": 9,
+          "endPos": 11
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         }
       ]
     },
@@ -2808,18 +2808,18 @@
       ]
     },
     {
-      "text": "@bot-09 search for dance songs",
+      "text": "@sbotify search for dance songs",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "songgenre",
-          "startPos": 19,
-          "endPos": 23
+          "startPos": 20,
+          "endPos": 24
         }
       ]
     },
@@ -2840,23 +2840,23 @@
       ]
     },
     {
-      "text": "@bot-09 browse r&b songs",
+      "text": "@sbotify browse r&b songs",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
+          "startPos": 9,
+          "endPos": 14
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "songgenre",
-          "startPos": 15,
-          "endPos": 17
+          "startPos": 16,
+          "endPos": 18
         }
       ]
     },
@@ -2877,44 +2877,44 @@
       ]
     },
     {
-      "text": "@bot-09 search for new songs",
+      "text": "@sbotify search for new songs",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
+          "startPos": 9,
+          "endPos": 14
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "playlist_type::new",
-          "startPos": 19,
-          "endPos": 21
+          "startPos": 20,
+          "endPos": 22
         }
       ]
     },
     {
-      "text": "@bot-09 search for top songs",
+      "text": "@sbotify search for top songs",
       "intent": "PlaylistControl",
       "entities": [
         {
           "entity": "playlist_command::browse",
-          "startPos": 8,
-          "endPos": 13
+          "startPos": 9,
+          "endPos": 14
         },
         {
           "entity": "appname",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 7
         },
         {
           "entity": "playlist_type::featured",
-          "startPos": 19,
-          "endPos": 21
+          "startPos": 20,
+          "endPos": 22
         }
       ]
     },
