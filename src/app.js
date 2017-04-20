@@ -1042,13 +1042,22 @@ bot.dialog('AuthorizeSpotify', [
             session.endDialog('k nvm');
         }
     }
-]).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
+]).triggerAction({
+    matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|load)/i
+}).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
 
 bot.dialog('DeleteUserData', function(session, args) {
     session.conversationData = {};
     session.userData = {};
 
-    session.endDialog(args.message ? args.message : 'all clear! ;)');
+    session.endDialog(args.message ? args.message : [
+        'all clear! ;)',
+        'cleared',
+        'shutting down... (y)',
+        'done!',
+        'bye',
+        'k bye'
+    ]);
 }).triggerAction({
-    matches: /^(?:\@[\w-_]+\s+)?(?:reset|reload)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:reset|terminate|exit|shutdown|turn off)/i
 });
