@@ -100,7 +100,7 @@ const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
 const playTrack = async function(session, spotify, track) {
-    session.send(emoji.get('musical_note'));
+    session.send(emoji.get('musical_notes'));
 
     var playback = null;
 
@@ -127,7 +127,7 @@ const playTrack = async function(session, spotify, track) {
 }
 
 const playPlaylist = async function(session, spotify, playlist) {
-    session.send('playing **%s** %s' + emoji.get('musical_note'), playlist.name);
+    session.send('playing **%s** %s', playlist.name, emoji.get('musical_notes'));
 
     var playback = null;
 
@@ -217,7 +217,7 @@ const playTrackQuery = async function(session, spotify, query, message = true) {
 
                 if (playback) {
                     if (session.conversationData.spotifyPlaylist.id !== session.conversationData.spotifyBotPlaylist.id) {
-                        session.send('now playing on **bot\'s queue** ' + emoji.get('musical_note'));
+                        session.send('now playing on **bot\'s queue** ' + emoji.get('musical_notes'));
                         session.conversationData.spotifyPlaylist = session.conversationData.spotifyBotPlaylist;
                     }
                     if (message) {
@@ -606,7 +606,7 @@ bot.dialog('ShowPlaylistQueue', [
                     var tracks = {};
                     data.forEach((track) => {
                         var text = currentTrack && currentTrack.id === track.id ?
-                            '**' + track.artists[0].name + ' - ' + track.name + '** ' + emoji.get('musical_note') :
+                            '**' + track.artists[0].name + ' - ' + track.name + '** ' + emoji.get('musical_notes') :
                             track.artists[0].name + ' - ' + track.name;
 
                         tracks[text] = track;
