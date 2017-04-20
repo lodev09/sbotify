@@ -1,2 +1,2 @@
 # sbotify
-my personal bot that plays music and many more soon!
+your personal bot that plays spotify music - supports conversation :)
