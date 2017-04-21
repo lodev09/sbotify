@@ -44,12 +44,17 @@ const createTrackCard = function(session, track) {
     var artist = track.artists && track.artists.length > 0 ? track.artists[0].name : 'not sure who';
     var title = track.name;
     var album = track.album.name;
-    var image = track.album.images[1];
+    var image = track.album.images[2];
     var url = track.external_urls.spotify;
+
+    var date = new Date(null);
+    date.setSeconds(track.duration_ms / 1000);
+    var mins = date.toISOString().substr(14, 5);
 
     return new builder.HeroCard(session)
         .title(artist + ' - ' + title)
-        .subtitle(album)
+        .subtitle(mins)
+        .text(album)
         .images([ builder.CardImage.create(session, image.url) ])
         .tap(builder.CardAction.openUrl(session, url));
 }
