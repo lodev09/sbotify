@@ -44,7 +44,7 @@ const createTrackCard = function(session, track) {
     var artist = track.artists && track.artists.length > 0 ? track.artists[0].name : 'not sure who';
     var title = track.name;
     var album = track.album.name;
-    var image = track.album.images[2];
+    var image = track.album.images[1];
     var url = track.external_urls.spotify;
 
     var date = new Date(null);
