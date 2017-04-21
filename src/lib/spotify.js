@@ -405,7 +405,7 @@ class Spotify {
         try {
             var data = await this.get('/users/' + ownerId + '/playlists/' + playlistId + '/tracks', {
                 market: this.userData.country,
-                fields: 'items(track(id, artists, external_urls, uri, name, album(id, name, images)))'
+                fields: 'items(track(id, artists, duration_ms, external_urls, uri, name, album(id, name, images)))'
             });
 
             return data && data.items.map(item => item.track);
