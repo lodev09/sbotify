@@ -542,7 +542,7 @@ class Spotify {
 
                                 result = await this.put('/me/player/shuffle?state=' + state);
                                 if (result) {
-                                    callback(state === 'true' ? 'on' : 'off');
+                                    callback(state === 'true' ? 'shuffle turned **on**' : 'shuffle turned **off**');
                                 }
                             }
 

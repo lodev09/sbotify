@@ -385,7 +385,7 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
         try {
             if (session.conversationData.spotifyDevice) {
                 var result = await spotify.playback(args, session.conversationData.spotifyDevice.id, (message) => {
-                    session.send('%s ' + emoji.random().emoji, message);
+                    session.send('%s', message);
                 });
 
                 if (!result) {
@@ -666,7 +666,7 @@ bot.dialog('ClearPlaylist', [
                 try {
                     var result = await spotify.clearPlaylist(session.conversationData.spotifyBotPlaylist.id);
                     if (result) {
-                        session.send('done ' + emoji.random().emoji);
+                        session.send('done (y)');
                     } else {
                         session.send('can\'t :(');
                     }
