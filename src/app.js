@@ -24,8 +24,15 @@ const connector = new builder.ChatConnector({
     gzipData: true
 });
 
+const parseName = function(session, def) {
+    if (!session.message.user) return def;
+    var name = session.message.user.name.trim().toLowerCase().match(/^[\w]+/i);
+
+    return name === '' ? def : name;
+}
+
 const bot = new builder.UniversalBot(connector, function (session) {
-    session.send("sorry %s, I didn't understand", session.message.user ? session.message.user.name : 'there');
+    session.send("sorry %s, I didn't understand", parseName(session));
     session.beginDialog('ShowHelp');
 });
 
@@ -284,10 +291,9 @@ bot.on('conversationUpdate', function (message) {
 
 bot.on('contactRelationUpdate', function (message) {
     if (message.action === 'add') {
-        var name = message.user ? message.user.name : null;
         var reply = new builder.Message()
                 .address(message.address)
-                .text("hello %s...", name || 'there');
+                .text("hello %s...", parseName({ message }));
         bot.send(reply);
         bot.beginDialog(message.address, 'ShowHelp');
     } else {
@@ -301,7 +307,6 @@ bot.on('deleteUserData', function (message) {
 
 bot.dialog('Greeting', [
     function(session, args) {
-        var name = session.message.user ? session.message.user.name : null;
         var greeting =  builder.EntityRecognizer.findEntity(args.intent.entities, 'greeting');
 
         var msg = new builder.Message(session)
@@ -318,7 +323,7 @@ bot.dialog('Greeting', [
                 'yoh',
                 'hey %s',
                 'hey'
-            ], name.toLowerCase() || 'user');
+            ], parseName(session));
 
         session.send(msg);
         builder.Prompts.confirm(session, 'do you need help?')
@@ -328,7 +333,8 @@ bot.dialog('Greeting', [
             session.send([
                 'got it',
                 'okay',
-                'no problem'
+                'no problem',
+                'sure'
             ]);
 
             session.beginDialog('ShowHelp');
@@ -349,15 +355,13 @@ bot.dialog('Greeting', [
 });
 
 bot.dialog('Compliment', function(session, args) {
-    var name = session.message.user ? session.message.user.name : null;
-
     session.endDialog([
         'no problem %s!',
         '(y)',
         'okay %s',
         'sure %s',
         'anytime ;)'
-    ], name || 'user');
+    ], parseName(session));
 
 }).triggerAction({
     matches: /^(?:\@[\w-_]+\s+)?(?:thanks|thank you)/i
