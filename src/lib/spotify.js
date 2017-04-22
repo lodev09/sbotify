@@ -492,12 +492,12 @@ class Spotify {
                             }
 
                             if (duration) {
-                                result = await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + Math.min(duration, trackDuration));
+                                var durationMs = Math.min(duration, trackDuration - 1000);
+                                result = await this.put('/me/player/seek' + deviceIdParam + (deviceIdParam ? '&' : '?') + 'position_ms=' + durationMs);
                                 if (result) {
                                     var date = new Date(null);
-                                    date.setSeconds(duration / 1000);
-
-                                    var mins = duration < 6000 ? date.toISOString().substr(15, 4) : date.toISOString().substr(14, 5);
+                                    date.setSeconds(durationMs / 1000);
+                                    var mins = durationMs < 600000 ? date.toISOString().substr(15, 4) : date.toISOString().substr(11, 8);
 
                                     callback('seeked to ' + mins);
                                 }
