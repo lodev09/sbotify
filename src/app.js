@@ -321,8 +321,7 @@ bot.dialog('Greeting', [
             ], name.toLowerCase() || 'user');
 
         session.send(msg);
-        builder.Prompts.text(session, 'do you need help?')
-        // builder.Prompts.text(session, msg);
+        builder.Prompts.confirm(session, 'do you need help?')
     },
     function(session, results) {
         if (results.response) {
