@@ -466,7 +466,7 @@ class Spotify {
                         case 'pause':
                             result = await this.put('/me/player/' + args.command + deviceIdParam);
                             if (result) {
-                                callback('okay');
+                                callback('(y)');
                             }
 
                             break;

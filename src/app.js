@@ -27,7 +27,8 @@ const connector = new builder.ChatConnector({
 });
 
 const bot = new builder.UniversalBot(connector, function (session) {
-    session.send('?', session.message.text);
+    session.send("sorry %s, I didn't understand", session.message.user ? session.message.user.name : 'there');
+    session.beginDialog('ShowHelp');
 });
 
 const getSpotify = function(session, options) {
@@ -261,6 +262,7 @@ bot.on('conversationUpdate', function (message) {
                         .address(message.address)
                         .text("hello everyone!");
                     bot.send(reply);
+                    bot.beginDialog(message.address, 'ShowHelp');
                 }
             });
         }
@@ -286,6 +288,7 @@ bot.on('contactRelationUpdate', function (message) {
                 .address(message.address)
                 .text("hello %s...", name || 'there');
         bot.send(reply);
+        bot.beginDialog(message.address, 'ShowHelp');
     } else {
         bot.beginDialog(message.address, 'DeleteUserData', { message: 'k bye' });
     }
@@ -316,15 +319,24 @@ bot.dialog('Greeting', [
                 'hey'
             ], name.toLowerCase() || 'user');
 
-        builder.Prompts.text(session, msg);
+        session.send(msg);
+        builder.Prompts.text(session, 'do you need help?')
+        // builder.Prompts.text(session, msg);
     },
     function(session, results) {
         if (results.response) {
+            session.send([
+                'got it',
+                'okay',
+                'no problem'
+            ]);
+
+            session.beginDialog('ShowHelp');
+        } else {
             session.endDialog([
                 'kool',
-                'good',
                 '(y)',
-                'sure :)',
+                ':)',
                 'yep',
                 'ok',
                 'k',
@@ -424,7 +436,7 @@ bot.dialog('PlaylistControl', function(session, args) {
     var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
 
     if (show) {
-        if (/top|featured/.test(session.message.text)) {
+        if (/top|featured/i.test(session.message.text)) {
             session.send('you meant to **browse** playlist right? :)');
             session.beginDialog('BrowsePlaylists', { playlistquery: playlistquery && playlistquery.entity });
         } else {
@@ -442,7 +454,7 @@ bot.dialog('PlaylistControl', function(session, args) {
             });
         }
     } else {
-        if (/playlist|queue/.test(session.message.text)) {
+        if (/playlist|queue/i.test(session.message.text)) {
             session.send('you meant to show queue right? :)');
             session.beginDialog('ShowPlaylistQueue');
         } else {
@@ -715,84 +727,117 @@ bot.dialog('SongQuery', async function(session, args) {
     matches: 'SongQuery'
 });
 
-bot.dialog('PlayMusic', async function(session, args) {
-    if (!args) return session.endDialog();
-
-    var trackQuery = null;
-    var trackNumber = null;
-    var playCommand = null;
-
-    if (args.playTrackQuery) {
-        trackQuery = args.playTrackQuery;
-    } else if (args.playTrackNumber) {
-        trackNumber = args.playTrackNumber;
-    } else if (args.playCommand) {
-        playCommand = args.playCommand;
-    } else {
-        if (args.intent) {
-            var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
-            var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
-            var play = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::play');
-            var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
-
-            if (songtitle) {
-                trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
-            } else if (play) {
-                playCommand = true;
-                trackNumber = number && number.entity;
-            }
-        }
-    }
-
-    var spotify = getSpotify(session, {
-        resumeDialog: 'PlayMusic',
-        dialogArgs: {
-            playTrackQuery: trackQuery,
-            playTrackNumber: trackNumber,
-            playCommand: playCommand
-        }
-    });
-
-    if (spotify) {
-        try {
-            if (trackQuery) {
-                const tracks = await playTrackQuery(session, spotify, trackQuery);
-                if (tracks && tracks.length > 1) {
-                    var artists = [];
-
-                    tracks.forEach((track) => {
-                        var artist = track.artists[0];
-                        var query = artist.name + ' - ' + track.name;
-
-                        if (artists.indexOf(query) === -1) {
-                            artists.push(query);
-                        }
-                    });
-
-                    builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
-                }
-
-                session.endDialog();
-            } else {
-
-                if (play) {
-                    if (trackNumber) {
-                        await playTrackNumber(session, spotify, parseInt(trackNumber));
-                    } else {
-                        session.beginDialog('ApplyPlayerCommand', { command: 'play' });
-                    }
-                } else {
-                    session.endDialog();
-                }
-            }
-
-        } catch (err) {
-            session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
-            console.log(err);
-        }
-    }
-
+bot.dialog('ShowHelp', function(session, args) {
+    var helps = [
+        '"play shape of you by ed sheeran"',
+        '"browse playlists"',
+        '"search for top hits"',
+        '"show queue"',
+        '"play track 5"',
+        '"play", "pause",',
+        '"next", "previous", "volume 80%", "toggle repeat", "toggle shuffle"',
+        '"what is that song?"',
+        'and ofcourse "help"'
+    ];
+    session.send('here\'s what I can do.\n\n' + helps.join('\n\n') + '\n\n');
+    session.send('I think you know the rest :)');
+    session.endDialogWithResult();
 }).triggerAction({
+    matches: 'SongQuery'
+});
+
+bot.dialog('PlayMusic', [
+    async function(session, args, next) {
+        if (!args) return session.endDialog();
+
+        var trackQuery = null;
+        var trackNumber = null;
+        var playCommand = null;
+
+        if (args.playTrackQuery) {
+            trackQuery = args.playTrackQuery;
+        } else if (args.playTrackNumber) {
+            trackNumber = args.playTrackNumber;
+        } else if (args.playCommand) {
+            playCommand = args.playCommand;
+        } else {
+            if (args.intent) {
+                var songtitle =  builder.EntityRecognizer.findEntity(args.intent.entities, 'songtitle');
+                var songartist = builder.EntityRecognizer.findEntity(args.intent.entities, 'songartist');
+                var play = builder.EntityRecognizer.findEntity(args.intent.entities, 'player_command::play');
+                var number = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
+
+                if (songtitle) {
+                    trackQuery = songtitle.entity + (songartist ? ' artist:' + songartist.entity : '');
+                } else if (play) {
+                    playCommand = true;
+                    trackNumber = number && number.entity;
+                }
+            }
+        }
+
+        var spotify = getSpotify(session, {
+            resumeDialog: 'PlayMusic',
+            dialogArgs: {
+                playTrackQuery: trackQuery,
+                playTrackNumber: trackNumber,
+                playCommand: playCommand
+            }
+        });
+
+        if (spotify) {
+            try {
+                if (trackQuery) {
+                    const tracks = await playTrackQuery(session, spotify, trackQuery);
+                    if (tracks && tracks.length > 1) {
+                        var artists = [];
+
+                        tracks.forEach((track) => {
+                            var artist = track.artists[0];
+                            var query = artist.name + ' - ' + track.name;
+
+                            if (artists.indexOf(query) === -1) {
+                                artists.push(query);
+                            }
+                        });
+
+                        builder.Prompts.choice(session, 'found other versions too...', artists, { listStyle: builder.ListStyle['button'] });
+                    }
+
+                    session.endDialog();
+                } else {
+
+                    if (play) {
+                        if (trackNumber) {
+                            await playTrackNumber(session, spotify, parseInt(trackNumber));
+                        } else {
+
+                            var query = session.message.text.replace(play.entity, '').trim();
+                            if (query !== '') {
+                                session.dialogData.trackQuery = query;
+                                builder.Prompts.confirm(session, 'are you looking for "' + query + '"?');
+                            } else {
+                                session.beginDialog('ApplyPlayerCommand', { command: 'play' });
+                            }
+                        }
+                    } else {
+                        session.endDialog();
+                    }
+                }
+
+            } catch (err) {
+                session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
+                console.log(err);
+            }
+        }
+
+    },
+    function(session, results) {
+        if (results.response) {
+            session.beginDialog('PlayMusic', { playTrackQuery: session.dialogData.trackQuery });
+        }
+    }
+]).triggerAction({
     matches: 'PlayMusic'
 });
 
