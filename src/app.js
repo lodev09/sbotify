@@ -2,7 +2,6 @@
 
 import express from 'express';
 import http from 'http';
-import SocketIO from 'socket.io';
 import builder from 'botbuilder';
 import uuid from 'uuid';
 import emoji from 'node-emoji';
@@ -12,7 +11,6 @@ import Spotify from './lib/spotify';
 let app = express();
 
 let server = http.Server(app);
-let io = new SocketIO(server);
 
 const port = process.env.PORT;
 server.listen(port, function () {
