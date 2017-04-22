@@ -768,7 +768,7 @@ bot.dialog('ShowHelp', function(session, args) {
         'what is that song?',
         'help'
     ];
-    session.send('command me by saying...\n\n- ' + helps.join('\n\n- '));
+    session.send('command me by saying...\n\n- ' + helps.join('\n- '));
     session.send('I think you know the rest :)');
     session.endDialogWithResult();
 }).triggerAction({
