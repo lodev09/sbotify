@@ -124,10 +124,10 @@ const playTrack = async function(session, spotify, track) {
                 .attachments([ card ]);
             session.send(msg);
         } else {
-            session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one :)');
+            session.send('can\'t play on current device. :(\n\ntry to say "devices" to select one :)');
         }
     } else {
-        session.send('device not set. type "show devices" to get started.');
+        session.send('device not set. say "show devices" to get started.');
     }
 }
 
@@ -155,7 +155,7 @@ const playPlaylist = async function(session, spotify, playlist) {
                 .attachments([ card ]);
             session.send(msg);
         } else {
-            session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+            session.send('can\'t play on current device. :(\n\ntry to say "devices" to select one');
         }
     } else {
         session.send('device not set. type "show devices" to get started.');
@@ -237,7 +237,7 @@ const playTrackQuery = async function(session, spotify, query, message = true) {
 
                     return tracks;
                 } else {
-                    session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+                    session.send('can\'t play on current device. :(\n\ntry to say "devices" to select one');
                 }
             } else {
                 session.send('device not set. type "show devices" to get started.');
@@ -408,12 +408,12 @@ bot.dialog('ApplyPlayerCommand', async function(session, args) {
                 });
 
                 if (!result) {
-                    session.send('cannot connect to device. try to type "devices" to select one :)');
+                    session.send('cannot connect to device. try to say "devices" to select one :)');
                 }
 
                 session.endDialogWithResult({ response: result })
             } else {
-                session.send('can\'t play on current device. :(\n\ntry to type "devices" to select one');
+                session.send('can\'t play on current device. :(\n\ntry to say "devices" to select one');
                 session.endDialogWithResult();
             }
         } catch (err) {
@@ -740,7 +740,7 @@ bot.dialog('SongQuery', async function(session, args) {
 
 bot.dialog('ShowHelp', function(session, args) {
     if (!session.conversationData.spotifyUser) {
-        session.send('setup spotify by typing "init"');
+        session.send('setup spotify by saying "init"');
     }
 
     if (!session.conversationData.spotifyDevice) {
