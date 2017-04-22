@@ -777,8 +777,6 @@ bot.dialog('ShowHelp', function(session, args) {
 
 bot.dialog('PlayMusic', [
     async function(session, args, next) {
-        session.sendTyping();
-
         if (!args) return session.endDialog();
 
         var trackQuery = null;
@@ -876,8 +874,6 @@ bot.dialog('AddMusic', [
     async function(session, args) {
         if (!args) return session.endDialogWithResult();
 
-        session.sendTyping();
-
         var trackQuery = args.trackQuery;
 
         if (trackQuery) {
@@ -915,8 +911,6 @@ bot.dialog('AddMusic', [
         }
     },
     async function(session, results) {
-        session.sendTyping();
-
         if (results.response) {
             if (results.response.entity) {
                 var spotify = getSpotify(session);
