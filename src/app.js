@@ -106,7 +106,8 @@ const recognizer = new builder.LuisRecognizer(process.env.LOUIS_MODEL);
 bot.recognizer(recognizer);
 
 const playTrack = async function(session, spotify, track) {
-    session.send(emoji.get('musical_note'));
+    session.send('now playing. enjoy ' + emoji.get('musical_note'));
+    session.sendTyping();
 
     var playback = null;
 
@@ -134,6 +135,7 @@ const playTrack = async function(session, spotify, track) {
 
 const playPlaylist = async function(session, spotify, playlist) {
     session.send('playing **%s** %s', playlist.name, emoji.get('musical_note'));
+    session.sendTyping();
 
     var playback = null;
 
@@ -193,6 +195,7 @@ const queueTrack = async function(session, spotify, query, message = true) {
 }
 
 const playTrackNumber = async function(session, spotify, number) {
+    session.sendTyping();
     var data = await spotify.getPlaylistTracks(session.conversationData.spotifyPlaylist.owner.id, session.conversationData.spotifyPlaylist.id);
     if (data && data.length > 0) {
         var track = data[Math.max(1, number) - 1];
@@ -391,6 +394,8 @@ bot.dialog('PlayerControl', function(session, args) {
 });
 
 bot.dialog('ApplyPlayerCommand', async function(session, args) {
+    session.sendTyping();
+
     var spotify = getSpotify(session, {
         resumeDialog: 'ApplyPlayerCommand',
         dialogArgs: {
@@ -503,6 +508,8 @@ bot.dialog('BrowsePlaylists', [
     },
     async function (session, results, next) {
         if (results.response) {
+            session.sendTyping();
+
             session.dialogData.selectedType = results.response.entity;
             var type = browseTypes[results.response.entity];
 
@@ -574,6 +581,7 @@ bot.dialog('BrowsePlaylists', [
                         }
                     }
 
+                    session.sendTyping();
                     var data = await spotify.browsePlaylists(type, options);
 
                     if (data && data.length > 0) {
@@ -616,6 +624,8 @@ bot.dialog('BrowsePlaylists', [
 
 bot.dialog('ShowPlaylistQueue', [
     async function(session, args, next) {
+        session.sendTyping();
+
         var spotify = getSpotify(session, {
             resumeDialog: 'ShowPlaylistQueue'
         });
@@ -677,6 +687,8 @@ bot.dialog('ClearPlaylist', [
         builder.Prompts.confirm(session, 'are you sure you want to clear our **bot queue**?');
     },
     async function(session, results) {
+        session.sendTyping();
+
         var spotify = getSpotify(session, { resumeDialog: 'ClearPlaylist' });
         if (spotify) {
             if (results.response) {
@@ -703,6 +715,8 @@ bot.dialog('ClearPlaylist', [
 ]);
 
 bot.dialog('SongQuery', async function(session, args) {
+    session.sendTyping();
+
     var spotify = getSpotify(session, { resumeDialog: 'SongQuery' });
     if (spotify) {
         try {
@@ -728,18 +742,33 @@ bot.dialog('SongQuery', async function(session, args) {
 });
 
 bot.dialog('ShowHelp', function(session, args) {
+    if (!session.conversationData.spotifyUser) {
+        session.send('setup spotify by typing "init"');
+    }
+
+    if (!session.conversationData.spotifyDevice) {
+        session.send('setup your device by saying "devices"');
+    }
+
     var helps = [
-        '"play shape of you by ed sheeran"',
-        '"browse playlists"',
-        '"search for top hits"',
-        '"show queue"',
-        '"play track 5"',
-        '"play", "pause",',
-        '"next", "previous", "volume 80%", "toggle repeat", "toggle shuffle"',
-        '"what is that song?"',
-        'and ofcourse "help"'
+        'play shape of you by ed sheeran',
+        'journey - open arms',
+        'browse playlists',
+        'search for "top hits"',
+        'show queue',
+        'play track 5',
+        'play, pause,',
+        'next',
+        'previous',
+        'volume 80%',
+        'set toggle',
+        'repeat',
+        'toggle',
+        'shuffle',
+        'what is that song?',
+        'help'
     ];
-    session.send('here\'s what I can do.\n\n' + helps.join('\n\n') + '\n\n');
+    session.send('command me by saying...\n\n- ' + helps.join('\n\n- '));
     session.send('I think you know the rest :)');
     session.endDialogWithResult();
 }).triggerAction({
@@ -748,6 +777,8 @@ bot.dialog('ShowHelp', function(session, args) {
 
 bot.dialog('PlayMusic', [
     async function(session, args, next) {
+        session.sendTyping();
+
         if (!args) return session.endDialog();
 
         var trackQuery = null;
@@ -845,6 +876,8 @@ bot.dialog('AddMusic', [
     async function(session, args) {
         if (!args) return session.endDialogWithResult();
 
+        session.sendTyping();
+
         var trackQuery = args.trackQuery;
 
         if (trackQuery) {
@@ -882,6 +915,8 @@ bot.dialog('AddMusic', [
         }
     },
     async function(session, results) {
+        session.sendTyping();
+
         if (results.response) {
             if (results.response.entity) {
                 var spotify = getSpotify(session);
@@ -905,6 +940,8 @@ bot.dialog('AddMusic', [
 
 bot.dialog('SpotifySetDevice', [
     async function(session, args, next) {
+        session.sendTyping();
+
         var spotify = getSpotify(session, {
             resumeDialog: 'SpotifySetDevice',
             dialogArgs: { playTrackQuery: args && args.playTrackQuery }
@@ -944,7 +981,8 @@ bot.dialog('SpotifySetDevice', [
         }
     },
     async function(session, results) {
-        console.log(results);
+        session.sendTyping();
+
         if (results.response) {
             if (results.response.entity) {
                 var device = session.dialogData.devices[results.response.entity];
@@ -989,6 +1027,8 @@ bot.dialog('CreatePlaylist', [
         }
     },
     async function(session, results) {
+        session.sendTyping();
+
         var spotify = getSpotify(session, {
             resumeDialog: 'CreatePlaylist',
             dialogArgs: results.response
@@ -1025,6 +1065,8 @@ bot.dialog('CreatePlaylist', [
 
 bot.dialog('SpotifyAuthorized', [
     async function(session, args, next) {
+        session.sendTyping();
+
         try {
             // authorize spotify
             var tokenData = await Spotify.initToken(args.authCode);
