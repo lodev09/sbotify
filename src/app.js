@@ -743,7 +743,7 @@ bot.dialog('ShowHelp', function(session, args) {
     session.send('I think you know the rest :)');
     session.endDialogWithResult();
 }).triggerAction({
-    matches: 'SongQuery'
+    matches: 'ShowHelp'
 });
 
 bot.dialog('PlayMusic', [
