@@ -762,6 +762,7 @@ bot.dialog('ShowHelp', function(session, args) {
         'previous',
         'volume 80%',
         'set toggle',
+        'seek 2:00',
         'repeat',
         'toggle',
         'shuffle',

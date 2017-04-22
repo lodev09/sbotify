@@ -496,7 +496,9 @@ class Spotify {
                                 if (result) {
                                     var date = new Date(null);
                                     date.setSeconds(duration / 1000);
-                                    var mins = date.toISOString().substr(14, 5);
+
+                                    if (duration)
+                                    var mins = duration < 600 ? date.toISOString().substr(15, 4) : date.toISOString().substr(14, 5);
 
                                     callback('seeked to ' + mins);
                                 }
