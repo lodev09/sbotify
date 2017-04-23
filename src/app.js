@@ -147,9 +147,7 @@ const playPlaylist = async function(session, spotify, playlist) {
     if (session.conversationData.spotifyDevice) {
         try {
             playback = await spotify.play(null, session.conversationData.spotifyDevice.id, playlist.uri);
-            if (playback) {
-                session.conversationData.spotifyPlaylist = playlist;
-            }
+            session.conversationData.spotifyPlaylist = playlist;
         } catch (err) {
             session.send('opps... bot make bobo ' + emoji.get('face_with_head_bandage'));
             console.log(err);
@@ -593,7 +591,7 @@ bot.dialog('BrowsePlaylists', [
                         });
 
                         session.dialogData.playlists = playlists;
-                        builder.Prompts.choice(session, 'here\'s what we have.', playlists, { listStyle: builder.ListStyle['auto'] });
+                        builder.Prompts.choice(session, 'here\'s what I got.', playlists, { listStyle: builder.ListStyle['auto'] });
                     } else {
                         session.send('nothing :(');
                         session.endDialogWithResult();
