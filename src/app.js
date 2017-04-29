@@ -763,7 +763,7 @@ bot.dialog('ShowHelp', [
     },
     function(session, results) {
         if (results.response) {
-            var helps = [
+            var moreHelps = [
                 'clear queue',
                 'play track 5',
                 'set volume 80%',
