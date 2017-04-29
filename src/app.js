@@ -740,38 +740,57 @@ bot.dialog('SongQuery', async function(session, args) {
     matches: 'SongQuery'
 });
 
-bot.dialog('ShowHelp', function(session, args) {
-    if (!session.conversationData.spotifyUser) {
-        session.send('setup spotify by saying "init"');
-    }
+bot.dialog('ShowHelp', [
+    function(session, args) {
+        if (!session.conversationData.spotifyUser) {
+            session.send('setup spotify by saying "init"');
+        }
 
-    if (!session.conversationData.spotifyDevice) {
-        session.send('setup your device by saying "devices"');
-    }
+        if (!session.conversationData.spotifyDevice) {
+            session.send('setup your device by saying "devices"');
+        }
 
-    var helps = [
-        'play shape of you by ed sheeran',
-        'journey - open arms',
-        'browse playlists',
-        'search for "top hits"',
-        'show queue',
-        'play track 5',
-        'play, pause,',
-        'next',
-        'previous',
-        'volume 80%',
-        'set toggle',
-        'seek 2:00',
-        'repeat',
-        'toggle',
-        'shuffle',
-        'what is that song?',
-        'help'
-    ];
-    session.send('command me by saying...\n\n- ' + helps.join('\n- '));
-    session.send('I think you know the rest :)');
-    session.endDialogWithResult();
-}).triggerAction({
+        var helps = [
+            'browse',
+            'play/queue shape of you',
+            'play, pause, next, previous, etc.',
+            'search for "top hits"',
+            'show queue',
+            'quit'
+        ];
+        session.send('command me by saying...\n\n- ' + helps.join('\n- '));
+        builder.Prompts.confirm(session, 'do you want more?');
+    },
+    function(session, results) {
+        if (results.response) {
+            var helps = [
+                'clear queue',
+                'play track 5',
+                'set volume 80%',
+                'seek 2:00',
+                'set repeat',
+                'set shuffle',
+                'what\'s playing?',
+                'help'
+            ];
+
+            session.send('here\'s more I can do...\n\n- ' + moreHelps.join('\n- '));
+            session.endDialogWithResult();
+        } else {
+            session.send([
+                'I thought so ;)',
+                'got it (y)',
+                '(y)',
+                ';)',
+                'kool'
+            ]);
+
+            session.endDialogWithResult({
+                resumed: builder.ResumeReason.notCompleted
+            });
+        }
+    }
+]).triggerAction({
     matches: 'ShowHelp'
 });
 
@@ -963,7 +982,7 @@ bot.dialog('SpotifySetDevice', [
                         next({ response: { entity: defaultDevice } })
                     }
                 } else {
-                    session.send('no devices found. [open spotify](spotify:open) and try again :)');
+                    session.send('no devices found. [open spotify](https://open.spotify.com) and try again :)');
                     session.endDialogWithResult({
                         resumed: builder.ResumeReason.notCompleted
                     });
@@ -1134,7 +1153,7 @@ bot.dialog('AuthorizeSpotify', [
         }
     }
 ]).triggerAction({
-    matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|start|load)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|start|load|reset)/i
 }).cancelAction('cancelAuthorizeSpotify', 'k', { matches: 'CancelAction' });
 
 bot.dialog('DeleteUserData', function(session, args) {
@@ -1150,5 +1169,5 @@ bot.dialog('DeleteUserData', function(session, args) {
         'k bye'
     ]);
 }).triggerAction({
-    matches: /^(?:\@[\w-_]+\s+)?(?:reset|terminate|exit|shutdown|turn off|quit)/i
+    matches: /^(?:\@[\w-_]+\s+)?(?:terminate|exit|shutdown|turn off|quit|leave)/i
 });
