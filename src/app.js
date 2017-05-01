@@ -591,7 +591,7 @@ bot.dialog('BrowsePlaylists', [
                         });
 
                         session.dialogData.playlists = playlists;
-                        builder.Prompts.choice(session, 'here\'s what I got.', playlists, { listStyle: builder.ListStyle['auto'] });
+                        builder.Prompts.choice(session, 'here\'s what I got. type the number or "cancel" ;)', playlists, { listStyle: builder.ListStyle['auto'] });
                     } else {
                         session.send('nothing :(');
                         session.endDialogWithResult();
