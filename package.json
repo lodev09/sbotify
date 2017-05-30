@@ -25,15 +25,15 @@
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "botbuilder": "^3.7.0",
+    "botbuilder": "^3.8.3",
     "dotenv": "^4.0.0",
-    "express": "^4.15.2",
+    "express": "^4.15.3",
     "node-emoji": "^1.5.1",
     "restify": "^4.3.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0",
-    "webpack": "^2.3.3"
+    "webpack": "^2.6.1"
   }
 }
