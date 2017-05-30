@@ -305,7 +305,8 @@ class Spotify {
     async getBrowseCategories() {
         try {
             var data = await this.get('/browse/categories', {
-                country: this.userData.country
+                country: this.userData.country,
+                limit: 50
             });
 
             return data && data.categories.items;
@@ -323,7 +324,7 @@ class Spotify {
                     if (options && options.query) {
                         data = await this.search('"' + options.query + '"', {
                             type: 'playlist',
-                            limit: 20
+                            limit: 50
                         });
                     }
 
@@ -333,7 +334,8 @@ class Spotify {
                     break;
                 case 'featured-playlists':
                     var featuredPlaylists = await this.get('/browse/' + type, {
-                        country: this.userData.country
+                        country: this.userData.country,
+                        limit: 50
                     });
 
                     if (featuredPlaylists) {
@@ -344,7 +346,8 @@ class Spotify {
                 case 'categories':
                     if (options && options.categoryId) {
                         var categoryPlaylists = await this.get('/browse/categories/' + options.categoryId + '/playlists', {
-                            country: this.userData.country
+                            country: this.userData.country,
+                            limit: 50
                         });
 
                         if (categoryPlaylists) {
