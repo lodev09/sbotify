@@ -2,7 +2,7 @@
 
 import express from 'express';
 import http from 'http';
-import builder from 'botbuilder';
+import builder, { ChatConnector, UniversalBot } from 'botbuilder';
 import uuid from 'uuid';
 import emoji from 'node-emoji';
 
@@ -18,7 +18,7 @@ server.listen(port, function () {
 });
 
 // Create chat bot
-const connector = new builder.ChatConnector({
+const connector = new ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD,
     gzipData: true
@@ -31,7 +31,7 @@ const parseName = function(session, def) {
     return name === '' ? def : name;
 }
 
-const bot = new builder.UniversalBot(connector, function (session) {
+const bot = new UniversalBot(connector, function (session) {
     session.send("sorry %s, I didn't understand", parseName(session));
     session.beginDialog('ShowHelp');
 });
