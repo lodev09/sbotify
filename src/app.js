@@ -117,6 +117,20 @@ app.get('/spotify/authorized', function(req, res) {
     }
 });
 
+// install mention middleware. fixes #2530 and #2419
+bot.use({
+    receive: (e, session, next) => {
+        const mention = '@' + e.address.bot.name;
+        if (e.type === 'message') {
+            if (e.text.includes(mention)) {
+                e.text = e.text.replace(mention, '');
+            }
+        }
+
+        next();
+    }
+});
+
 // Enable Conversation Data persistence
 bot.set('persistConversationData', true);
 
