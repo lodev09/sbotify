@@ -123,7 +123,7 @@ bot.use({
         const mention = '@' + e.address.bot.name;
         if (e.type === 'message') {
             if (e.text.includes(mention)) {
-                e.text = e.text.replace(mention, '');
+                e.text = e.text.replace(mention, '').trim();
             }
         }
 
