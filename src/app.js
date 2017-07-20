@@ -495,7 +495,7 @@ bot.dialog('PlaylistControl', function(session, args) {
 
 }).triggerAction({
     matches: 'PlaylistControl'
-}).cancelAction('cancelPlaylistControl', 'k', { matches: /^(cancel|nvm|nevermind)/i });
+}).cancelAction('cancelPlaylistControl', 'k', { matches: /^(?:\@[\w-_]+\s+)?(?:cancel|nvm|nevermind)/i });
 
 const browseTypes = {
     '1. My Playlists' : 'user-playlists',
@@ -644,7 +644,7 @@ bot.dialog('BrowsePlaylists', [
             }
         }
     }
-]).cancelAction('cancelBrowsePlaylists', 'k', { matches: /^(cancel|nvm|nevermind)/i });
+]).cancelAction('cancelBrowsePlaylists', 'k', { matches: /^(?:\@[\w-_]+\s+)?(?:cancel|nvm|nevermind)/i });
 
 bot.dialog('ShowPlaylistQueue', [
     async function(session, args, next) {
@@ -704,7 +704,7 @@ bot.dialog('ShowPlaylistQueue', [
             }
         }
     }
-]).cancelAction('cancelShowPlaylistQueue', 'k', { matches: /^(cancel|nvm|nevermind)/i });
+]).cancelAction('cancelShowPlaylistQueue', 'k', { matches: /^(?:\@[\w-_]+\s+)?(?:cancel|nvm|nevermind)/i });
 
 bot.dialog('ClearPlaylist', [
     function(session, args) {
@@ -1053,7 +1053,7 @@ bot.dialog('SpotifySetDevice', [
     }
 ]).triggerAction({
     matches: /^(?:\@[\w-_]+\s+)?(?:show devices|list devices|devices|setup devices|setup device)/i
-}).cancelAction('cancelSpotifySetDevice', 'k', { matches: /^(cancel|nvm|nevermind)/i });;
+}).cancelAction('cancelSpotifySetDevice', 'k', { matches: /^(?:\@[\w-_]+\s+)?(?:cancel|nvm|nevermind)/i });;
 
 bot.dialog('CreatePlaylist', [
     function(session, args, next) {
@@ -1179,7 +1179,7 @@ bot.dialog('AuthorizeSpotify', [
     }
 ]).triggerAction({
     matches: /^(?:\@[\w-_]+\s+)?(?:turn on|setup|init|start|load|reset)/i
-}).cancelAction('cancelAuthorizeSpotify', 'k', { matches: /^(cancel|nvm|nevermind)/i });
+}).cancelAction('cancelAuthorizeSpotify', 'k', { matches: /^(?:\@[\w-_]+\s+)?(?:cancel|nvm|nevermind)/i });
 
 bot.dialog('DeleteUserData', function(session, args) {
     session.conversationData = {};
