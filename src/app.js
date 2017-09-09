@@ -54,7 +54,7 @@ const getSpotify = function(session, options) {
     if (session.conversationData.spotifyToken && session.conversationData.spotifyUser) {
         return new Spotify(session.conversationData.spotifyToken, session.conversationData.spotifyUser);
     } else {
-        message = 'okay before I do that, do you have a spotify account?\n\n\\*\\* _Warning: you must be a **premium** user to use playback service_'
+        message = 'okay before I do that, do you have a **premium** spotify account?'
         session.replaceDialog('AuthorizeSpotify', { message, options });
     }
 }
@@ -1007,7 +1007,7 @@ bot.dialog('SpotifySetDevice', [
                         next({ response: { entity: defaultDevice } })
                     }
                 } else {
-                    session.send('no devices found. [open spotify](https://open.spotify.com) and try again :)');
+                    session.send('no devices found. **open spotify** and try again :)');
                     session.endDialogWithResult({
                         resumed: ResumeReason.notCompleted
                     });
